@@ -1,4 +1,4 @@
-package bssm.blueeyes;
+package openuasl.resq.android.activity;
  
 
 import android.app.AlertDialog;

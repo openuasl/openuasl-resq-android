@@ -1,5 +1,6 @@
-package bssm.blueeyes;
+package openuasl.resq.android.activity;
 
+import bssm.blueeyes.R;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;

@@ -28,7 +28,7 @@
         android:label="BlueEyes"
         android:theme="@android:style/Theme.Holo.NoActionBar" >
         <activity
-            android:name=".MainActivity"
+            android:name="openuasl.resq.android.activity.MainActivity"
             android:label="BlueEyes" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -38,7 +38,7 @@
         </activity>
         <activity android:name="SplashActivity" />
         <activity
-            android:name=".LoginActivity"
+            android:name="openuasl.resq.android.activity.LoginActivity"
             android:label="User Login" >
         </activity>
         <activity android:name="LoginmainActivity" />

@@ -1,10 +1,10 @@
-package bssm.blueeyes;
+package openuasl.resq.android.activity;
 
 import java.util.HashMap;
 
-import bssm.blueeyes.AlertDialogManager;
+import openuasl.resq.android.activity.AlertDialogManager;
+import openuasl.resq.android.activity.SessionManager;
 import bssm.blueeyes.R;
-import bssm.blueeyes.SessionManager;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;

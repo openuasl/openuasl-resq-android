@@ -1,9 +1,10 @@
-package bssm.blueeyes;
+package openuasl.resq.android.activity;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import bssm.blueeyes.R;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;

@@ -3,8 +3,8 @@ package openuasl.resq.android.ucstream;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
+import openuasl.resq.android.activity.QRCodeActivity;
 import openuasl.resq.android.net.OnQRCodeCertResultListener;
-import bssm.blueeyes.QRCodeActivity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;

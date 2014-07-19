@@ -3,7 +3,7 @@ package openuasl.resq.android.ucstream;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
-import bssm.blueeyes.LoginActivity;
+import openuasl.resq.android.activity.LoginActivity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
