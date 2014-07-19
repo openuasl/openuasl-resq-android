@@ -114,7 +114,6 @@ public class UavCameraStreamer extends UavAuthorizationClient{
 		try {
 			out_stream.write(buffer,0,1);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
 		}
