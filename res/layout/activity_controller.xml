@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    
+    <ImageView
+        android:id="@+id/crtlui_grid_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="60dp"
+        android:layout_marginLeft="60dp"
+        android:src="@drawable/crtlui_grid" />
+
+    <ImageView
+        android:id="@+id/crtlui_grid_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/crtlui_grid_left"
+        android:layout_marginBottom="60dp"
+        android:layout_marginRight="60dp"
+        android:src="@drawable/crtlui_grid" />
+
+    <fragment
+        android:id="@+id/map"
+        android:layout_width="300dp"
+        android:layout_height="230dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        class="com.google.android.gms.maps.MapFragment" />
+
+</RelativeLayout>
