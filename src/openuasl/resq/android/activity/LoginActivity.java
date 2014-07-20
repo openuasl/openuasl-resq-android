@@ -4,7 +4,9 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import bssm.blueeyes.R;
+import openuasl.resq.android.R;
+import openuasl.resq.android.app.AlertDialogManager;
+import openuasl.resq.android.app.SessionManager;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;

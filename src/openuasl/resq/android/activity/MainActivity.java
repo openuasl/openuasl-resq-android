@@ -2,9 +2,9 @@ package openuasl.resq.android.activity;
 
 import java.util.HashMap;
 
-import openuasl.resq.android.activity.AlertDialogManager;
-import openuasl.resq.android.activity.SessionManager;
-import bssm.blueeyes.R;
+import openuasl.resq.android.app.AlertDialogManager;
+import openuasl.resq.android.app.SessionManager;
+import openuasl.resq.android.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;

@@ -2,7 +2,9 @@ package openuasl.resq.android.activity;
 
 import java.util.HashMap;
 
-import bssm.blueeyes.R;
+import openuasl.resq.android.R;
+import openuasl.resq.android.app.AlertDialogManager;
+import openuasl.resq.android.app.SessionManager;
 import openuasl.resq.android.net.OnQRCodeCertResultListener;
 import openuasl.resq.android.ucstream.UavCameraStreamer;
 import android.app.*;
