@@ -28,7 +28,7 @@
         android:label="BlueEyes"
         android:theme="@android:style/Theme.Holo.NoActionBar" >
         <activity
-            android:name="openuasl.resq.android.activity.MainActivity"
+            android:name=".activity.MainActivity"
             android:label="BlueEyes" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -36,13 +36,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="SplashActivity" />
+        <activity android:name=".activity.SplashActivity" />
         <activity
-            android:name="openuasl.resq.android.activity.LoginActivity"
+            android:name=".activity.LoginmainActivity"
             android:label="User Login" >
         </activity>
-        <activity android:name="LoginmainActivity" />
-        <activity android:name="ControllerActivity" />
+        <activity android:name=".activity.LoginActivity" />
+        <activity android:name=".activity.ControllerActivity" />
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
@@ -52,7 +52,7 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name="QRCodeActivity"
+            android:name=".activity.QRCodeActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" >
         </activity>
     </application>
