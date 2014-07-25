@@ -1,2 +1,6 @@
 /bin/
 /gen/
+/extlibs/CaptureActivity/bin/
+/extlibs/CaptureActivity/gen/
+/extlibs/google-play-services_lib/bin/
+/extlibs/google-play-services_lib/gen/
