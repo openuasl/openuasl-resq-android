@@ -1,13 +1,19 @@
 package openuasl.resq.android.net;
 
+import android.annotation.SuppressLint;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 
+import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
 
 public class UavAuthorizationClient {
 
@@ -20,7 +26,7 @@ public class UavAuthorizationClient {
 	private OnQRCodeCertResultListener qrcode_listener = null;
 	
 
-	protected Socket socket;
+	protected SSLSocket socket;
 	protected InputStream in_stream;
 	protected OutputStream out_stream;
 	protected byte[] buffer = new byte[UavAuthorizationConf.netbuf_size];
@@ -30,23 +36,40 @@ public class UavAuthorizationClient {
 		server_port = port;
 	}
 
-	protected void connectServer(boolean use_ssl) 
-			throws UnknownHostException, IOException {
+	@SuppressLint("TrulyRandom") 
+	SSLSocketFactory getDummySocketFactory() 
+			throws KeyManagementException, NoSuchAlgorithmException{
 		
-			if (use_ssl == false) {
-					socket = new Socket(server_ip, server_port);
+		SSLContext ctx = SSLContext.getInstance("SSL");
+		ctx.init(null, new TrustManager[]{new DummyTrustManager()}, new SecureRandom());
 				
-			} else {
-				SSLSocketFactory f = (SSLSocketFactory) SSLSocketFactory
-						.getDefault();
-				socket = (SSLSocket) f.createSocket(server_ip, server_port);
-				((SSLSocket) socket).startHandshake();
-			}
+		return ctx.getSocketFactory();
+	}
+	
+	protected void connectServer() 
+			throws UnknownHostException, IOException {
 
-			in_stream = socket.getInputStream();
-			out_stream = socket.getOutputStream();
-			
-			is_connected = true;
+		SSLSocketFactory f = null;
+
+		/* use x509 certificate for test */
+		try {
+			f = getDummySocketFactory();
+		} catch (KeyManagementException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		/* use x509 certificate for test */
+
+		socket = (SSLSocket) f.createSocket(server_ip, server_port);
+		socket.startHandshake();
+
+		in_stream = socket.getInputStream();
+		out_stream = socket.getOutputStream();
+
+		is_connected = true;
 	}
 	
 	public void setQRCodeCertListener(

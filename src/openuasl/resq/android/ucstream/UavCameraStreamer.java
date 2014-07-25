@@ -33,7 +33,7 @@ public class UavCameraStreamer extends UavAuthorizationClient{
 	
 	public void connectServer() 
 			throws UnknownHostException, IOException{
-		super.connectServer(false);
+		super.connectServer();
 	}
 	
 	public void sendReadyForStreamming() 

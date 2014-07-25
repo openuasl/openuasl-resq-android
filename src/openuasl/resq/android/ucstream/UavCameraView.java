@@ -100,21 +100,9 @@ public class UavCameraView extends SurfaceView implements SurfaceHolder.Callback
 						} catch (UnknownHostException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
-							Toast toast = Toast.makeText(context, 
-									e.getMessage(),
-									Toast.LENGTH_LONG);
-								
-								toast.setGravity(Gravity.CENTER, 0, 0);	
-								toast.show();
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
-							Toast toast = Toast.makeText(context, 
-									e.getMessage(),
-									Toast.LENGTH_LONG);
-									
-								toast.setGravity(Gravity.CENTER, 0, 0);	
-								toast.show();
 						}
 					}
 				}).start();

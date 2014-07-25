@@ -2,7 +2,7 @@ package openuasl.resq.android.ucstream;
 
 public class UavCameraStreamerConf {
 
-	public static final String server_ip =  "210.118.69.45";
+	public static final String server_ip =  "210.118.69.44";
 	public static final int server_port = 54321;
 	
 	public static final int imgbuf_size = 4096;
