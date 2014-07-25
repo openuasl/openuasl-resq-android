@@ -15,7 +15,7 @@ public class UavCameraStreamerConf {
 
 	public static class IMGS_RESQPROTO_REP {
 		public final static byte resq_rep_start = 0x43;
-		public final static byte resq_rep_imgseg = 0x44;
+		public final static byte resq_rep_imgseg = 0x13;
 	};
 	
 }
