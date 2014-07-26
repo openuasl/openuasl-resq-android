@@ -78,23 +78,25 @@ public class UavCameraStreamer extends UavAuthorizationClient{
 			in_stream.read(recv_buffer);
 		}
 		
-		int total_length = 0;
+		int total_length = 0, total_recv = 0;
 		// little endian
-		total_length |= recv_buffer[1] << 24;
-		total_length |= recv_buffer[2] << 16;
-		total_length |= recv_buffer[3] << 8;
-		total_length |= recv_buffer[4];
+		total_recv |= (recv_buffer[5] & 0xFF) << 24;
+		total_recv |= (recv_buffer[6] & 0xFF) << 16;
+		total_recv |= (recv_buffer[7] & 0xFF) << 8;
+		total_recv |= (recv_buffer[8] & 0xFF);
+				
+		total_length = total_recv;
 		
-		while(total_length > 0){
+		while(total_recv > 0){
 			bytes_len = in_stream.read(recv_buffer);
-			jpeg_buffer.add(recv_buffer);
-			total_length -= bytes_len;
+			byte[] tmp = new byte[bytes_len];
+			System.arraycopy(recv_buffer, 0, tmp, 0, bytes_len);
+			jpeg_buffer.add(tmp);
+			total_recv -= bytes_len;
 		}
 				
 		int count = jpeg_buffer.size();
-		byte[] image_data = new byte[
-		       (count - 1) * UavCameraStreamerConf.imgbuf_size
-				+ jpeg_buffer.get(count - 1).length];
+		byte[] image_data = new byte[total_length];
 
 		for(int i=0; i < count; i++){
 			byte[] tmp = jpeg_buffer.get(i);
