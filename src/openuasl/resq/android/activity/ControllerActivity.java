@@ -44,14 +44,10 @@ public class ControllerActivity extends Activity {
 		
 		app = (ResquerApp)getApplication();
 		
-		try {
-			app.certificateProcess();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		app.certificateProcess();
 		
 		app.commMW.SetHandler(commMW_handler);
-		app.commFrsky.SetHandler(commFrsky_handler);
+		//app.commFrsky.SetHandler(commFrsky_handler);
 		
 	}
 

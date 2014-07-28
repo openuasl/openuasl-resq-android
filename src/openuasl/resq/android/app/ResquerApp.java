@@ -2,6 +2,7 @@ package openuasl.resq.android.app;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.UnknownHostException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -109,10 +110,27 @@ public class ResquerApp extends App {
 		return devid_hex_num;
 	}
 	
-	public void certificateProcess() throws IOException{
-		client.Connect();
-		client.sendDeviceId(devid_hex_num.getBytes());
-		client.sendQRCodeCert(QRCodeActivity.qrvalueresult.getBytes());
+	public void certificateProcess(){
+		
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+
+				try {
+					client.Connect();
+					client.sendDeviceId(devid_hex_num.getBytes());
+					client.sendQRCodeCert(QRCodeActivity.qrvalueresult.getBytes());
+				} catch (UnknownHostException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}).start();
 		
 	}
 	
