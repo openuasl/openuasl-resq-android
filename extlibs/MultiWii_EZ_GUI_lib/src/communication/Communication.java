@@ -30,7 +30,7 @@ public abstract class Communication {
 	public boolean Connected = false;
 	public String address = "";
 
-	Context context;
+	protected Context context;
 
 	protected int mState;
 	
