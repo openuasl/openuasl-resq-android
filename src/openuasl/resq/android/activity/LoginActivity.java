@@ -6,6 +6,7 @@ import java.security.NoSuchAlgorithmException;
 
 import openuasl.resq.android.R;
 import openuasl.resq.android.app.AlertDialogManager;
+import openuasl.resq.android.app.ResquerApp;
 import openuasl.resq.android.app.SessionManager;
 import android.app.Activity;
 import android.content.Context;
@@ -20,8 +21,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class LoginActivity extends Activity {
-	MessageDigest md;
-	// Email, password edittext
+	
+	private ResquerApp app;
+	
 	EditText txtUsername, txtPassword;
 	public int ck = -1;
 	// login button
@@ -29,9 +31,7 @@ public class LoginActivity extends Activity {
 	
 	// Alert Dialog Manager
 	AlertDialogManager alert = new AlertDialogManager();
-
-	public static byte[] devid_bytes = null;
-	public static String devid_hex_num = new String();
+	
 	
 	// Session Manager Class
 	SessionManager session;
@@ -42,12 +42,17 @@ public class LoginActivity extends Activity {
 		
 	/*************************************************/
 	
+	public static String devid_hex_num = new String();
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
 
+		app = (ResquerApp)getApplication();
+		
+		devid_hex_num = app.getDeviceId();
+		
 		// Session Manager
 		session = new SessionManager(getApplicationContext());
 
@@ -55,7 +60,6 @@ public class LoginActivity extends Activity {
 		tv_devid = (TextView)findViewById(R.id.textv_devid_string);
 		tv_uavid = (TextView)findViewById(R.id.textv_uavid_string);
 		
-		setDeviceId();
 		tv_devid.setText(devid_hex_num);
 		/*************************************************/
 		
@@ -89,6 +93,8 @@ public class LoginActivity extends Activity {
 
 			@Override
 			public void onClick(View arg0) {
+				/*
+				
 				// Get username, password from EditText
 				String password = txtPassword.getText().toString();
 
@@ -117,7 +123,8 @@ public class LoginActivity extends Activity {
 					alert.showAlertDialog(LoginActivity.this, "Login failed..",
 							"Please enter username and password", false);
 				}
-
+				 
+				*/
 			}
 		});
 	}
@@ -134,44 +141,6 @@ public class LoginActivity extends Activity {
 		}
 	}
 	
-	private void setDeviceId(){
-		
-		if(devid_hex_num.compareTo("") != 0) return;
-		
-		
-		final TelephonyManager tm = (TelephonyManager) getBaseContext()
-				.getSystemService(Context.TELEPHONY_SERVICE);
-
-		final String androidId;
-		androidId = ""
-				+ android.provider.Settings.Secure.getString(
-						getContentResolver(),
-						android.provider.Settings.Secure.ANDROID_ID);
-		try {
-			md = MessageDigest.getInstance("SHA-256");
-			int tmdevid = androidId.hashCode();
-			final String deviceId = tmdevid + "";
-			try {
-				md.update(deviceId.getBytes("UTF-8"));
-			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} // Change this to "UTF-16"
-				// if
-				// needed
-			devid_bytes = md.digest();
-
-			for (int i = 0; i < devid_bytes.length; i++) {
-				devid_hex_num += Integer
-						.toHexString(0xff & (int) devid_bytes[i]);
-			}
-
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		 Log.i("devid", devid_hex_num );
-	}
+	
 	
 }

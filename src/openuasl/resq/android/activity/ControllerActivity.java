@@ -1,5 +1,7 @@
 package openuasl.resq.android.activity;
 
+import java.io.IOException;
+
 import openuasl.resq.android.R;
 import openuasl.resq.android.app.ResquerApp;
 import android.app.Activity;
@@ -41,6 +43,12 @@ public class ControllerActivity extends Activity {
 		sv_view = (RelativeLayout)inflater.inflate(R.layout.controller_surface_view, null);
 		
 		app = (ResquerApp)getApplication();
+		
+		try {
+			app.certificateProcess();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 		app.commMW.SetHandler(commMW_handler);
 		app.commFrsky.SetHandler(commFrsky_handler);

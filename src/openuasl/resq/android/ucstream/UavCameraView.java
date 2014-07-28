@@ -23,7 +23,6 @@ public class UavCameraView extends SurfaceView implements SurfaceHolder.Callback
 	
 	public UavCameraView(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		// TODO Auto-generated constructor stub
 		
 		this.context = context;
 		holder = getHolder();
@@ -94,8 +93,8 @@ public class UavCameraView extends SurfaceView implements SurfaceHolder.Callback
 							mThread = new UavCameraStreamerThread(holder, context);
 							
 							initListeners();
-							mThread.streamer.sendQRCodeCert(QRCodeActivity
-									.qrvalueresult.getBytes("euc-kr"));
+							mThread.streamer.sendQRCodeCert(
+									QRCodeActivity.qrvalueresult.getBytes());
 							
 						} catch (UnknownHostException e) {
 							// TODO Auto-generated catch block

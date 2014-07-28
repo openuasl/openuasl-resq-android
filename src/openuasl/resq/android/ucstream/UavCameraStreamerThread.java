@@ -30,9 +30,8 @@ public class UavCameraStreamerThread extends Thread {
 			throws UnknownHostException, IOException {
 		mHolder = holder;
 		streamer = UavCameraStreamer.getInstance();
-				
-		euc_kr_devid = LoginActivity
-				.devid_hex_num.getBytes("euc-kr");
+		
+		euc_kr_devid = LoginActivity.devid_hex_num.getBytes();
 		
 		streamer.connectServer();
 		streamer.sendDeviceId(euc_kr_devid);

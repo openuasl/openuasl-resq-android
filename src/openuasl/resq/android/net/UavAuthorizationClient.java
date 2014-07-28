@@ -46,7 +46,7 @@ public class UavAuthorizationClient {
 		return ctx.getSocketFactory();
 	}
 	
-	protected void connectServer() 
+	protected void Connect() 
 			throws UnknownHostException, IOException {
 
 		SSLSocketFactory f = null;
@@ -114,10 +114,15 @@ public class UavAuthorizationClient {
 					is_auth = false;
 				}
 
-				qrcode_listener.onQRCodeCertResult(result);
+				if(qrcode_listener != null)
+					qrcode_listener.onQRCodeCertResult(result);
 
 			}
 		}).start();
+	}
+	
+	public void Disconnect() throws IOException{
+		socket.close();
 	}
 		
 	public boolean isConnected(){
