@@ -28,7 +28,6 @@ import android.media.RingtoneManager;
 import android.support.v4.app.NotificationCompat;
 
 import com.ezio.multiwii.R;
-import com.ezio.multiwii.Main.MainMultiWiiActivity;
 
 public class Notifications {
 
@@ -45,6 +44,8 @@ public class Notifications {
 		if (Id == 0) {
 			Id = rnd.nextInt();
 		}
+		/*
+		
 		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context).setSmallIcon(R.drawable.ic_stat_icon).setContentTitle(title).setContentText(text);
 		if (Sound)
 			mBuilder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
@@ -52,9 +53,6 @@ public class Notifications {
 		mBuilder.setTicker(title + ":" + text);
 		mBuilder.setOngoing(isPresistant);
 		mBuilder.setAutoCancel(true);
-
-		// Intent notificationIntent = new Intent(context,
-		// MainMultiWiiActivity.class);
 
 		Intent notificationIntent = new Intent(context, MainMultiWiiActivity.class);
 		// notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // You
@@ -67,6 +65,8 @@ public class Notifications {
 		mBuilder.setContentIntent(contentIntent);
 
 		mNotificationManager.notify(Id, mBuilder.build());
+		
+		*/
 	}
 
 	public void Cancel(int Id) {

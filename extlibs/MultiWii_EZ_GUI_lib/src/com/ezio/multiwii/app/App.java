@@ -38,7 +38,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.ezio.multiwii.R;
-import com.ezio.multiwii.Main.MainMultiWiiActivity;
 import com.ezio.multiwii.frsky.FrskyProtocol;
 import com.ezio.multiwii.helpers.Functions;
 import com.ezio.multiwii.helpers.Notifications;
@@ -51,14 +50,10 @@ import com.ezio.multiwii.mw.MultiWii230;
 import com.ezio.multiwii.mw.MultiWii230NAV;
 import com.ezio.multiwii.mw.MultirotorData;
 import com.ezio.multiwii.waypoints.Waypoint;
-import com.ezio.sec.Sec;
+//import com.ezio.sec.Sec;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import communication.BT;
-import communication.BT_New;
 import communication.Communication;
-import communication.SerialCDC_ACM;
-import communication.SerialFTDI;
 
 public class App extends Application implements Sensors.Listener {
 
@@ -69,8 +64,8 @@ public class App extends Application implements Sensors.Listener {
 	// debug
 	public boolean D = false; // debug
 	public String TAG = "EZGUI";
-	public String MapAPIKeyDebug = "0AxI9Dd4w6Y_4upkSvwAfQDK1f8fXpsnCx07vyg";
-	public String MapAPIKeyPublic = "0AxI9Dd4w6Y-ERQuGVB0WKB4x4iZe3uD9HVpWYQ";
+//	public String MapAPIKeyDebug = "0AxI9Dd4w6Y_4upkSvwAfQDK1f8fXpsnCx07vyg";
+//	public String MapAPIKeyPublic = "0AxI9Dd4w6Y-ERQuGVB0WKB4x4iZe3uD9HVpWYQ";
 	// end debug/////////////////
 
 	private static String REFRESHRATE = "REFRESHRATE";
@@ -119,7 +114,7 @@ public class App extends Application implements Sensors.Listener {
 	public static final int COMMUNICATION_TYPE_SERIAL_OTHERCHIPS = 2;
 	public static final int COMMUNICATION_TYPE_BT_NEW = 4;
 
-	public int CommunicationTypeMW = COMMUNICATION_TYPE_BT;
+	//public int CommunicationTypeMW = COMMUNICATION_TYPE_BT;
 
 	public static final String SERIAL_PORT_BAUD_RATE_MW = "SerialPortBaudRateMW1";
 	public int SerialPortBaudRateMW = 115200;
@@ -152,7 +147,7 @@ public class App extends Application implements Sensors.Listener {
 	public boolean ConnectOnStart = false;
 
 	// private static final String ADVANCEDFUNCTIONS = "ADVANCEDFUNCTIONS";
-	public boolean AdvancedFunctions = false;
+	//public boolean AdvancedFunctions = false;
 
 	private static final String DISABLEBTONEXIT = "DISABLEBTONEXIT";
 	public boolean DisableBTonExit = true;
@@ -241,8 +236,6 @@ public class App extends Application implements Sensors.Listener {
 
 		prepareSounds();
 
-		Say(getString(R.string.Started));
-
 		soundManager.playSound(2);
 
 		notifications = new Notifications(getApplicationContext());
@@ -257,7 +250,8 @@ public class App extends Application implements Sensors.Listener {
 	public void Init() {
 		ReadSettings();
 		ForceLanguage();
-
+		
+		/*
 		if (CommunicationTypeMW == COMMUNICATION_TYPE_BT) {
 			commMW = new BT(getApplicationContext());
 			CommunicationTypeFrSky = COMMUNICATION_TYPE_BT;
@@ -284,7 +278,7 @@ public class App extends Application implements Sensors.Listener {
 		if (CommunicationTypeFrSky == COMMUNICATION_TYPE_BT_NEW) {
 			commFrsky = new BT_New(getApplicationContext());
 		}
-
+		 */
 		// if (CommunicationTypeFrSky == COMMUNICATION_TYPE_SERIAL_FTDI) {
 		// commFrsky = new SerialFTDI(getApplicationContext());
 		// }
@@ -324,18 +318,11 @@ public class App extends Application implements Sensors.Listener {
 		MacAddress = prefs.getString(MACADDERSS, "");
 		MacAddressFrsky = prefs.getString(MACADDERSSFRSKY, "");
 		ConnectOnStart = prefs.getBoolean(CONNECTONSTART, false);
-		// AdvancedFunctions = prefs.getBoolean(ADVANCEDFINCTIONS, false);
-
-		AdvancedFunctions = (Sec.VerifyDeveloperID(Sec.GetDeviceID(getApplicationContext()), Sec.TestersIDs));
-		if (AdvancedFunctions)
-			Toast.makeText(getApplicationContext(), "You are a tester", Toast.LENGTH_SHORT).show();
-
 		DisableBTonExit = prefs.getBoolean(DISABLEBTONEXIT, true);
 		ForceLanguage = prefs.getString(FORCELANGUAGE, "");
 		PeriodicSpeaking = prefs.getInt(PERIODICSPEAKING, 20000);
 		VoltageAlarm = prefs.getFloat(VOLTAGEALARM, 9.9f);
 		GraphsToShow = prefs.getString(GRAPHSTOSHOW, GraphsToShow);
-		// UseOfflineMaps = prefs.getBoolean(USEOFFLINEMAPS, false);
 		RefreshRate = prefs.getInt(REFRESHRATE, 100);
 		CopyFrskyToMW = prefs.getBoolean(COPYFRSKYTOMW, false);
 		AppStartCounter = prefs.getInt(APPSTARTCOUNTER, 0);
@@ -343,9 +330,6 @@ public class App extends Application implements Sensors.Listener {
 		ReverseRoll = prefs.getBoolean(REVERSEROLL, false);
 		MapZoomLevel = prefs.getFloat(MAPZOOMLEVEL, 9);
 		MapCenterPeriod = prefs.getInt(MAPCENTERPERIOD, 3);
-		CommunicationTypeMW = prefs.getInt(COMMUNICATION_TYPE_MW, COMMUNICATION_TYPE_BT);
-		// CommunicationTypeFrSky = prefs.getInt(COMMUNICATION_TYPE_FRSKY,
-		// COMMUNICATION_TYPE_BT);
 		SerialPortBaudRateMW = prefs.getInt(SERIAL_PORT_BAUD_RATE_MW, 115200);
 		SerialPortBaudRateFrSky = prefs.getInt(SERIAL_PORT_BAUD_RATE_FRSKY, 9600);
 		// MainRequestMethod = prefs.getInt(MAINREQUESTMETHOD, 2);
@@ -374,7 +358,7 @@ public class App extends Application implements Sensors.Listener {
 		editor.putBoolean(REVERSEROLL, ReverseRoll);
 		editor.putFloat(MAPZOOMLEVEL, MapZoomLevel);
 		editor.putInt(MAPCENTERPERIOD, MapCenterPeriod);
-		editor.putInt(COMMUNICATION_TYPE_MW, CommunicationTypeMW);
+//		editor.putInt(COMMUNICATION_TYPE_MW, CommunicationTypeMW);
 		editor.putInt(SERIAL_PORT_BAUD_RATE_MW, SerialPortBaudRateMW);
 		editor.putBoolean(FRSKY_SUPPORT, FrskySupport);
 		editor.putBoolean(NO_DATA_RECEIVED_WARNING, NoDataReceievedWarning);
@@ -382,7 +366,7 @@ public class App extends Application implements Sensors.Listener {
 
 		if (!quiet) {
 			Toast.makeText(getApplicationContext(), getString(R.string.Settingssaved), Toast.LENGTH_LONG).show();
-			// Say(getString(R.string.Settingssaved));
+			Say(getString(R.string.Settingssaved));
 		}
 	}
 
@@ -639,12 +623,14 @@ public class App extends Application implements Sensors.Listener {
 	}
 
 	public void RestartApp() {
+		/*
 		Intent mStartActivity = new Intent(getApplicationContext(), MainMultiWiiActivity.class);
 		int mPendingIntentId = 123456;
 		PendingIntent mPendingIntent = PendingIntent.getActivity(getApplicationContext(), mPendingIntentId, mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
 		AlarmManager mgr = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
 		mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 200, mPendingIntent);
 		System.exit(0);
+		*/
 	}
 
 }
