@@ -3,6 +3,10 @@ package openuasl.resq.android.ucstream;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
+
+import android.util.Log;
 
 import openuasl.resq.android.net.UavAuthorizationClient;
 
@@ -10,7 +14,10 @@ public class UavCameraStreamer extends UavAuthorizationClient{
 
 	private static UavCameraStreamer instance = null;
 	private OnStartStreammingListener start_listener = null;
+	private FrameBuffer frame_buffer = new FrameBuffer();
 	private ArrayList<byte[]> jpeg_buffer = new ArrayList<byte[]>();
+	
+	private boolean isStarting = false;
 	
 	private UavCameraStreamer(String ip, int port) {
 		super(ip, port);
@@ -50,14 +57,14 @@ public class UavCameraStreamer extends UavAuthorizationClient{
 			public void run() {
 				try {
 					in_stream.read(buffer);
-					boolean result = false;
+					isStarting = false;
 
 					if (buffer[0] == UavCameraStreamerConf
 							.IMGS_RESQPROTO_REP.resq_rep_start) {
-						result = true;
+						isStarting = true;
 					}
 
-					start_listener.onStartStreamming(result);
+					start_listener.onStartStreamming(isStarting);
 
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -67,7 +74,35 @@ public class UavCameraStreamer extends UavAuthorizationClient{
 		}).start();
 	}
 	
-	public byte[] receive1Frame() throws IOException{
+	public void startStramming(){
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				
+				while(isAuth()){
+					try {
+						readJpegStream();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				
+			}
+		}).start();
+	}
+	
+	public byte[] receive1Frame(){
+		
+		if(frame_buffer.isEmpty()){
+			return null;
+		}
+		
+		return frame_buffer.get();
+	}
+	
+	private void readJpegStream() throws IOException{
 		int bytes_len = 0;
 		byte[] recv_buffer = new byte[UavCameraStreamerConf.imgbuf_size];
 		
@@ -86,7 +121,7 @@ public class UavCameraStreamer extends UavAuthorizationClient{
 		total_recv |= (recv_buffer[8] & 0xFF);
 				
 		total_length = total_recv;
-		
+				
 		while(total_recv > 0){
 			bytes_len = in_stream.read(recv_buffer);
 			byte[] tmp = new byte[bytes_len];
@@ -106,7 +141,7 @@ public class UavCameraStreamer extends UavAuthorizationClient{
 		
 		jpeg_buffer.clear();
 		
-		return image_data;
+		frame_buffer.add(image_data);
 	}
 	
 	public boolean sendStopStreamming(){

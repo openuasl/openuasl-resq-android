@@ -23,6 +23,8 @@ public class UavCameraStreamerThread extends Thread {
 	String devid = null;
 	byte[] euc_kr_devid = null;
 	
+	Bitmap resized = null;
+	
 	int dsp_w;
 	int dsp_h;
 
@@ -46,17 +48,13 @@ public class UavCameraStreamerThread extends Thread {
 	public void run() {		
 		
 		Log.i("Streamming Thread","Run!!");
+		streamer.startStramming();
 		
 		while (streamer.isConnected()) {
 			
-			byte[] data = null;
+			byte[] data = streamer.receive1Frame();
 			
-			try {
-				data = streamer.receive1Frame();
-			} catch (IOException e) {
-				e.printStackTrace();
-				break;
-			}
+			if(data == null) continue;				
 			
 			bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
 
@@ -79,5 +77,5 @@ public class UavCameraStreamerThread extends Thread {
 			}
 		}		
 	}
-
+	
 }
