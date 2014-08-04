@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 
 import openuasl.resq.android.R;
-
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -15,7 +14,8 @@ public class UavControlCommunication extends Communication {
 
 	ResquerClient client;
 	SimpleQueue<Integer> mw_fifo = new SimpleQueue<Integer>();
-			
+	
+	private static final byte mw_req_header = (byte)0x90;
 	private static final byte mw_rep_header = (byte)0x91;
 	private static final byte fk_rep_header = (byte)0x93;
 	private static final byte si_rep_header = (byte)0x95;
@@ -104,7 +104,11 @@ public class UavControlCommunication extends Communication {
 		
 		if(client.isAuth()){
 			try {
-				client.write(arr);
+				byte[] buf = new byte[arr.length+1];
+				buf[0] = mw_req_header;
+				System.arraycopy(arr, 0, buf, 1, arr.length);
+				
+				client.write(buf);
 			} catch (IOException e) {
 				sendMessageToUI_Toast(e.getMessage());
 				e.printStackTrace();
