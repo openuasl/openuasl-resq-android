@@ -61,6 +61,12 @@ public class ResquerApp extends App {
 			}
 		});
 		
+		UavControlCommunication c = 
+				new UavControlCommunication(
+						getApplicationContext(), client);
+		
+		
+		
 		super.commMW =  new UavControlCommunication(
 				getApplicationContext(), client);
 		

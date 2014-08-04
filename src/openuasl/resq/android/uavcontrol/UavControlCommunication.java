@@ -14,7 +14,14 @@ import communication.SimpleQueue;
 public class UavControlCommunication extends Communication {
 
 	ResquerClient client;
-	SimpleQueue<Integer> fifo = new SimpleQueue<Integer>();
+	SimpleQueue<Integer> mw_fifo = new SimpleQueue<Integer>();
+			
+	private static final byte mw_rep_header = (byte)0x91;
+	private static final byte fk_rep_header = (byte)0x93;
+	private static final byte si_rep_header = (byte)0x95;
+	
+	private OnReceiveFunctionData recv_func;
+	private OnReceiveSurvivorData recv_surv;
 	
 	boolean loopStop = false;
 	
@@ -71,13 +78,13 @@ public class UavControlCommunication extends Communication {
 
 	@Override
 	public boolean dataAvailable() {
-		return !fifo.isEmpty();
+		return !mw_fifo.isEmpty();
 	}
 
 	@Override
 	public byte Read() {
 		BytesRecieved+=1;
-		return (byte) (fifo.get() & 0xff);
+		return (byte) (mw_fifo.get() & 0xff);
 	}
 
 	@Override
@@ -135,8 +142,8 @@ public class UavControlCommunication extends Communication {
 		Connected = client.isAuth();
 		// [FTDriver] Create Read Buffer
 		byte[] rbuf = new byte[4096]; // 1byte <--slow-- [Transfer Speed]
-										// --fast-->
-										// 4096 byte
+											// --fast-->
+											// 4096 byte
 		if (client.isAuth()) {
 			int len = 0;
 			try {
@@ -145,13 +152,30 @@ public class UavControlCommunication extends Communication {
 				e.printStackTrace();
 			}
 
-			mHandler.obtainMessage(MESSAGE_READ, len, -1, rbuf).sendToTarget();
-
-			for (int i = 0; i < len; i++)
-				fifo.put(Integer.valueOf(rbuf[i]));
+			switch(rbuf[0]){
+			case mw_rep_header:
+				putMWData(rbuf, len);
+				break;
+			case fk_rep_header:
+				recv_func.onReceiveFunctionData(rbuf);
+				break;
+			case si_rep_header:
+				recv_surv.onReceiveSurvivorData(rbuf);
+				break;
+			default:
+				return;
+			}
+			
 		}
 	}
 	
+	private void putMWData(byte[] buf, int len){
+		mHandler.obtainMessage(MESSAGE_READ, len, -1, buf).sendToTarget();
+		
+		for (int i = 1; i < len; i++)
+			mw_fifo.put(Integer.valueOf(buf[i]));
+	}
+		
 	private void startMainLoop(){
 		new Thread(new Runnable() {
 			
