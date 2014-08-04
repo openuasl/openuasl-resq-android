@@ -65,7 +65,10 @@ public class ResquerApp extends App {
 				new UavControlCommunication(
 						getApplicationContext(), client);
 		
+		// test 중
 		
+		//c.setOnReceiveFunctionData(rfd);
+		//c.setOnReceiveSurvivorData(srd);
 		
 		super.commMW =  new UavControlCommunication(
 				getApplicationContext(), client);

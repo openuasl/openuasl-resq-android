@@ -31,6 +31,14 @@ public class UavControlCommunication extends Communication {
 		Enable();
 	}
 
+	public void setOnReceiveFunctionData(OnReceiveFunctionData rfd){
+		recv_func = rfd;
+	}
+	
+	public void setOnReceiveSurvivorData(OnReceiveSurvivorData srd){
+		recv_surv = srd;
+	}
+	
 	@Override
 	public void Enable() {
 		
