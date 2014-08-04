@@ -2,34 +2,81 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
-    
-    <ImageView
-        android:id="@+id/crtlui_grid_left"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+
+    <com.ezio.multiwii.radio.Stick2View
+        android:id="@+id/ctrlui_left"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_marginBottom="60dp"
-        android:layout_marginLeft="60dp"
-        android:src="@drawable/crtlui_grid" />
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="20dp" />
 
-    <ImageView
-        android:id="@+id/crtlui_grid_right"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <com.ezio.multiwii.radio.Stick2View
+        android:id="@+id/ctrlui_right"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/crtlui_grid_left"
-        android:layout_marginBottom="60dp"
-        android:layout_marginRight="60dp"
-        android:src="@drawable/crtlui_grid" />
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp" />
 
     <fragment
         android:id="@+id/map"
-        android:layout_width="300dp"
-        android:layout_height="230dp"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="800dp"
+        android:layout_height="200dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
         class="com.google.android.gms.maps.MapFragment" />
+
+    <com.ezio.multiwii.dashboard.PitchRollView
+        android:id="@+id/ctrlui_pitch"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true" />
+
+    <com.ezio.multiwii.dashboard.PitchRollView
+        android:id="@+id/ctrlui_roll"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/ctrlui_pitch" />
+
+    <com.ezio.multiwii.dashboard.dashboard3.HorizonView
+        android:id="@+id/ctrlui_horizon"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/ctrlui_roll" />
+    
+    <com.ezio.multiwii.dashboard.dashboard3.HeadingView
+        android:id="@+id/ctrlui_heading"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true" />
+    
+    <com.ezio.multiwii.dashboard.dashboard3.AltitudeView
+        android:id="@+id/ctrlui_altitude"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/ctrlui_heading" />
+
+    <com.ezio.multiwii.dashboard.dashboard3.VarioView
+        android:id="@+id/ctrlui_vario"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/ctrlui_altitude" />
+
+    <TextView
+        android:id="@+id/ctrlui_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/ctrlui_pitch" />
 
 </RelativeLayout>

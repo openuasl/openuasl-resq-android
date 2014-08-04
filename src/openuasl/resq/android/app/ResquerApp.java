@@ -30,6 +30,7 @@ public class ResquerApp extends App {
 	public void onCreate() {
 		// TODO Auto-generated method stub
 		super.onCreate();
+		super.TAG = "OpenUASL";
 		setDeviceId();
 	}
 	
@@ -65,7 +66,7 @@ public class ResquerApp extends App {
 				new UavControlCommunication(
 						getApplicationContext(), client);
 		
-		// test 중
+		// test 以�
 		
 		//c.setOnReceiveFunctionData(rfd);
 		//c.setOnReceiveSurvivorData(srd);

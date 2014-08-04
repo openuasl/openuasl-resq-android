@@ -312,7 +312,7 @@ public class App extends Application implements Sensors.Listener {
 
 	public void ReadSettings() {
 		RadioMode = prefs.getInt(RADIOMODE, 2);
-		Protocol = prefs.getInt(PROTOCOL, 220);
+		Protocol = prefs.getInt(PROTOCOL, 230);
 		MagMode = prefs.getInt(MAGMODE, 1);
 		TextToSpeach = prefs.getBoolean(TEXTTOSPEACH, true);
 		MacAddress = prefs.getString(MACADDERSS, "");
