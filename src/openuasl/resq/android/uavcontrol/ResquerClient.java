@@ -3,7 +3,7 @@ package openuasl.resq.android.uavcontrol;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
-import openuasl.resq.android.net.UavAuthorizationClient;
+import openuasl.resq.android.auth.UavAuthorizationClient;
 
 
 public class ResquerClient extends UavAuthorizationClient {

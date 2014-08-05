@@ -1,26 +1,24 @@
 package openuasl.resq.android.ucstream;
 
+import android.util.Log;
+
 public class FrameBuffer {
 
-	private int front;
-	private int rear;
-	private int maxSize;
-	private byte[][] buffer;
-
+	private byte[] buffer;
+	private int frame_count;
+		
 	public FrameBuffer() {
-
-		this.front = this.rear = 0;
-		this.maxSize = 2 + 1;
-		this.buffer = new byte[this.maxSize][];
+		buffer = null;
+		frame_count = 0;
 	}
 
 	public boolean isEmpty() {
-		return front == rear;
+		return buffer == null? true : false;
 	}
 
 	public void add(byte[] item) {
-		rear = (rear + 1) % maxSize;
-		buffer[rear] = item;
+		buffer = item;
+		frame_count++;
 	}
 
 	public byte[] get() {
@@ -28,8 +26,10 @@ public class FrameBuffer {
 		if (isEmpty())
 			return null;
 
-		front = (front + 1) % maxSize;
-		return buffer[front];
+		Log.i("lost frame : ", Integer.toString(frame_count));
+		frame_count = 0;
+		
+		return buffer;
 	}
 
 }

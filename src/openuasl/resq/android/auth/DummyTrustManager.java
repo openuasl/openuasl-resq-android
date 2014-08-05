@@ -1,4 +1,4 @@
-package openuasl.resq.android.net;
+package openuasl.resq.android.auth;
 
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;

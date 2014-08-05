@@ -46,7 +46,7 @@ public class Stick2View extends View {
 
 	int tmp = 0;
 
-	Bitmap[] bmp = new Bitmap[2];
+	protected Bitmap[] bmp = new Bitmap[2];
 
 	Matrix matrix = new Matrix();
 

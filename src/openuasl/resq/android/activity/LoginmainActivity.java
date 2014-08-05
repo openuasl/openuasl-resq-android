@@ -5,7 +5,7 @@ import java.util.HashMap;
 import openuasl.resq.android.R;
 import openuasl.resq.android.app.AlertDialogManager;
 import openuasl.resq.android.app.SessionManager;
-import openuasl.resq.android.net.OnQRCodeCertResultListener;
+import openuasl.resq.android.auth.OnQRCodeCertResultListener;
 import openuasl.resq.android.ucstream.UavCameraStreamer;
 import android.app.*;
 import android.os.Bundle;

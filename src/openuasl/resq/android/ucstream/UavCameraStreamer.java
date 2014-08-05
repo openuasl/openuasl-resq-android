@@ -8,7 +8,7 @@ import java.util.Queue;
 
 import android.util.Log;
 
-import openuasl.resq.android.net.UavAuthorizationClient;
+import openuasl.resq.android.auth.UavAuthorizationClient;
 
 public class UavCameraStreamer extends UavAuthorizationClient{
 

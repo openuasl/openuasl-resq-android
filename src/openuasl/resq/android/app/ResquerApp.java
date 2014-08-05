@@ -7,7 +7,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import openuasl.resq.android.activity.QRCodeActivity;
-import openuasl.resq.android.net.OnQRCodeCertResultListener;
+import openuasl.resq.android.auth.OnQRCodeCertResultListener;
 import openuasl.resq.android.uavcontrol.ResquerClient;
 import openuasl.resq.android.uavcontrol.UavControlCommunication;
 import openuasl.resq.android.uavcontrol.UavControlConf;

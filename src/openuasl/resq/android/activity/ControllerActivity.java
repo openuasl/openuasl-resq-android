@@ -2,11 +2,12 @@ package openuasl.resq.android.activity;
 
 import openuasl.resq.android.R;
 import openuasl.resq.android.app.ResquerApp;
+import openuasl.resq.android.uavcontrol.StickControlView;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.Window;
@@ -18,22 +19,22 @@ import com.ezio.multiwii.dashboard.dashboard3.AltitudeView;
 import com.ezio.multiwii.dashboard.dashboard3.HeadingView;
 import com.ezio.multiwii.dashboard.dashboard3.HorizonView;
 import com.ezio.multiwii.dashboard.dashboard3.VarioView;
-import com.ezio.multiwii.radio.*;
 import com.ezio.multiwii.waypoints.MapHelperClass;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 
 
-public class ControllerActivity extends Activity {
+public class ControllerActivity extends FragmentActivity {
 
 	ResquerApp app;
 	MapHelperClass map_helper;
 	RelativeLayout sv_view;
 	SurfaceView sv;
-	Stick2View ctrl_left;
-	Stick2View ctrl_right;
+	StickControlView ctrl_left;
+	StickControlView ctrl_right;
 	
 	// left
 	PitchRollView ctrl_pitch;
@@ -86,8 +87,9 @@ public class ControllerActivity extends Activity {
 	}
 
 	private void initControlViews(){
-		ctrl_left = (Stick2View)findViewById(R.id.ctrlui_left);
-		ctrl_right = (Stick2View)findViewById(R.id.ctrlui_right);
+		ctrl_left = (StickControlView)findViewById(R.id.ctrlui_left);
+		ctrl_right = (StickControlView)findViewById(R.id.ctrlui_right);
+		ctrl_right.throttle = true;
 				
 		ctrl_roll = (PitchRollView)findViewById(R.id.ctrlui_roll);
 		ctrl_pitch = (PitchRollView)findViewById(R.id.ctrlui_pitch);
@@ -101,6 +103,8 @@ public class ControllerActivity extends Activity {
 		
 		ctrl_info = (TextView)findViewById(R.id.ctrlui_info);
 		
+		map_helper = new MapHelperClass(((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap(), 5);
+				
 		map_helper.map.setOnCameraChangeListener(new OnCameraChangeListener() {
 			
 			@Override

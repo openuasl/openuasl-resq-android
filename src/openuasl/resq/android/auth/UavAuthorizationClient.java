@@ -1,4 +1,4 @@
-package openuasl.resq.android.net;
+package openuasl.resq.android.auth;
 
 import android.annotation.SuppressLint;
 import java.io.IOException;
