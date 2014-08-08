@@ -6,12 +6,13 @@ import java.net.UnknownHostException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import openuasl.resq.android.R;
 import openuasl.resq.android.activity.QRCodeActivity;
 import openuasl.resq.android.auth.OnQRCodeCertResultListener;
+import openuasl.resq.android.uavcontrol.OnStartControlListener;
 import openuasl.resq.android.uavcontrol.ResquerClient;
 import openuasl.resq.android.uavcontrol.UavControlCommunication;
 import openuasl.resq.android.uavcontrol.UavControlConf;
-
 import android.content.Context;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -35,10 +36,7 @@ public class ResquerApp extends App {
 	}
 	
 	@Override
-	public void Init() {
-		// TODO Auto-generated method stub
-		super.Init();
-				
+	public void Init() {				
 		client = new ResquerClient(
 				UavControlConf.server_ip, UavControlConf.server_port);
 		client.setQRCodeCertListener(new OnQRCodeCertResultListener() {
@@ -50,14 +48,25 @@ public class ResquerApp extends App {
 						
 					try {
 						client.sendReadyForControl();
+						
 					} catch (IOException e) {
 						e.printStackTrace();						
 					}
 					
 				}else{ // mismatch
 					Log.i("onQRCodeCertResult","fail");
-					
-					
+				}
+			}
+		});
+		
+		client.setStartControlListener(new OnStartControlListener() {
+			
+			@Override
+			public void onStartControl(boolean result) {
+				if(result){
+					((UavControlCommunication)commMW).restartLoop();
+				}else{
+					Log.i("onStartControl","fail");
 				}
 			}
 		});
@@ -73,7 +82,8 @@ public class ResquerApp extends App {
 		
 		super.commMW =  new UavControlCommunication(
 				getApplicationContext(), client);
-		
+		super.Init();
+		super.MapZoomLevel = 15;
 	}
 	
 	private void setDeviceId() {
@@ -129,7 +139,6 @@ public class ResquerApp extends App {
 				// TODO Auto-generated method stub
 
 				try {
-					client.Connect();
 					client.sendDeviceId(devid_hex_num.getBytes());
 					client.sendQRCodeCert(QRCodeActivity.qrvalueresult.getBytes());
 				} catch (UnknownHostException e) {

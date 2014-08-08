@@ -384,7 +384,7 @@ public class App extends Application implements Sensors.Listener {
 	}
 
 	public void Frequentjobs() {
-
+/*
 		// rssi
 		if (!commFrsky.Connected && commMW.Connected) {
 			frskyProtocol.TxRSSI = Functions.map(mw.rssi, 0, 1024, 0, 110);
@@ -411,12 +411,13 @@ public class App extends Application implements Sensors.Listener {
 			timer2 = System.currentTimeMillis() + timer2Freq;
 			soundManager.playSound(0);
 		}
-
+*/
 		// ===================timer every 1sek===============================
 		if (timer3 < System.currentTimeMillis()) {
 			timer3 = System.currentTimeMillis() + timer3Freq;
 
 			// Notifications
+			/*
 			if (mw.i2cError != tempLastI2CErrorCount) {
 				notifications.displayNotification(getString(R.string.Warning), "I2C Error=" + String.valueOf(mw.i2cError), true, 1, false);
 				tempLastI2CErrorCount = mw.i2cError;
@@ -424,7 +425,7 @@ public class App extends Application implements Sensors.Listener {
 
 			if (mw.DataFlow < 0 && NoDataReceievedWarning) {
 				notifications.displayNotification(getString(R.string.Warning), getString(R.string.NoDataRecieved) + " " + String.valueOf(mw.DataFlow), true, 1, false);
-			}
+			}*/
 
 			// Checkboxes speaking; ON OFF
 			for (int i = 0; i < mw.CHECKBOXITEMS; i++) {
@@ -432,15 +433,15 @@ public class App extends Application implements Sensors.Listener {
 					String s = "";
 					if (mw.ActiveModes[i]) {
 						s = getString(R.string.isON);
-						soundManager.playSound(2);
+						//soundManager.playSound(2);
 					} else {
 						s = getString(R.string.isOFF);
 					}
 
-					Say((mw.BoxNames[i] + s).toLowerCase(Locale.ENGLISH));
+					//Say((mw.BoxNames[i] + s).toLowerCase(Locale.ENGLISH));
 
 					if (mw.BoxNames[i].equals("ARM")) {
-						soundManager.playSound(1);
+						//soundManager.playSound(1);
 						mw.ZeroConnection();
 					}
 
@@ -454,9 +455,10 @@ public class App extends Application implements Sensors.Listener {
 				FollowHeadingBlinkFlag = !FollowHeadingBlinkFlag;
 			}
 
+			/*
 			if (VarioSound) {
 				varioSoundClass.Play(1000 + mw.vario * 20);
-			}
+			}*/
 
 		}
 		// --------------------END timer every 1sek---------------------------
@@ -514,7 +516,7 @@ public class App extends Application implements Sensors.Listener {
 			if (FollowHeading)
 				t += "Follow Heading";
 
-			notifications.displayNotification("Status", t, false, 99, false);
+			//notifications.displayNotification("Status", t, false, 99, false);
 
 		}
 		// --------------------END timer every 5sek---------------------------

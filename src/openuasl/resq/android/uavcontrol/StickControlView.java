@@ -1,5 +1,6 @@
 package openuasl.resq.android.uavcontrol;
 
+import openuasl.resq.android.app.ResquerApp;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
@@ -10,6 +11,8 @@ import com.ezio.multiwii.radio.Stick2View;
 
 public class StickControlView extends Stick2View {
 
+	private ResquerApp app;
+	
 	// false : RollPitchController
 	public boolean throttle;
 	
@@ -21,8 +24,6 @@ public class StickControlView extends Stick2View {
 		super(context, attrs);
 		throttle = false;
 		pos_center = 200 / 2;
-		
-				
 		pos_range = pos_center * Math.sin(Math.toRadians(45));
 		
 	}
@@ -38,17 +39,12 @@ public class StickControlView extends Stick2View {
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		
-		if(event.getAction() == MotionEvent.ACTION_UP){
-			SetPosition(1500, throttle? 1000 : 1500);
-		}else{
 			float px = cvtXPosToValue(event.getX());
 			float py = cvtYPosToValue(event.getY());
 			Log.i("position", Float.toString(px)+","+Float.toString(py)
 					+" // " +Float.toString(event.getX())+","+Float.toString(event.getY()));
 			
 			SetPosition(px,py);
-						
-		}
 		
 		return true;
 	}

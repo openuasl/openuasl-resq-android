@@ -23,7 +23,7 @@ public class UavControlCommunication extends Communication {
 	private OnReceiveFunctionData recv_func;
 	private OnReceiveSurvivorData recv_surv;
 	
-	boolean loopStop = false;
+	public boolean loopStop = false;
 	
 	public UavControlCommunication(Context context, ResquerClient c) {
 		super(context);
@@ -69,14 +69,15 @@ public class UavControlCommunication extends Communication {
 			sendMessageToUI_Toast(e.getMessage());
 			e.printStackTrace();
 		}
-
+				
 		if (client.isAuth()) {
 			super.Connected = true;
 			loopStop = false;
 			startMainLoop();
 			
 			setState(STATE_CONNECTED);
-			sendDeviceName("WiFi SSL Port" + String.valueOf(speed));
+			sendDeviceName("WiFi SSL Port" + 
+					String.valueOf(UavControlConf.server_port));
 			
 		}else{
 			super.Connected = false;
@@ -84,6 +85,22 @@ public class UavControlCommunication extends Communication {
 		}
 	}
 
+	public void restartLoop(){
+		if (client.isAuth()) {
+			super.Connected = true;
+			loopStop = false;
+			startMainLoop();
+			
+			setState(STATE_CONNECTED);
+			sendDeviceName("WiFi SSL Port" + 
+					String.valueOf(UavControlConf.server_port));
+			
+		}else{
+			super.Connected = false;
+			sendMessageToUI_Toast(context.getString(R.string.Unabletoconnect));
+		}
+	}
+	
 	@Override
 	public boolean dataAvailable() {
 		return !mw_fifo.isEmpty();
@@ -152,7 +169,7 @@ public class UavControlCommunication extends Communication {
 	
 	private synchronized void readToBuffer(){
 		Connected = client.isAuth();
-		// [FTDriver] Create Read Buffer
+		
 		byte[] rbuf = new byte[4096]; // 1byte <--slow-- [Transfer Speed]
 											// --fast-->
 											// 4096 byte
@@ -182,13 +199,13 @@ public class UavControlCommunication extends Communication {
 	}
 	
 	private void putMWData(byte[] buf, int len){
-		mHandler.obtainMessage(MESSAGE_READ, len, -1, buf).sendToTarget();
+		//mHandler.obtainMessage(MESSAGE_READ, len, -1, buf).sendToTarget();
 		
 		for (int i = 1; i < len; i++)
 			mw_fifo.put(Integer.valueOf(buf[i]));
 	}
 		
-	private void startMainLoop(){
+	public void startMainLoop(){
 		new Thread(new Runnable() {
 			
 			@Override

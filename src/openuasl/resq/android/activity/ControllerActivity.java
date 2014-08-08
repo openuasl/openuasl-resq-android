@@ -3,6 +3,7 @@ package openuasl.resq.android.activity;
 import openuasl.resq.android.R;
 import openuasl.resq.android.app.ResquerApp;
 import openuasl.resq.android.uavcontrol.StickControlView;
+import openuasl.resq.android.uavcontrol.UavControlConf;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -79,10 +80,15 @@ public class ControllerActivity extends FragmentActivity {
 		
 		initControlViews();
 		
-		app.certificateProcess();
-		
-		app.commMW.SetHandler(commMW_handler);
-		//app.commFrsky.SetHandler(commFrsky_handler);
+		new Thread(new Runnable() {	
+			@Override
+			public void run() {
+				app.commMW.Connect(UavControlConf.server_ip, UavControlConf.server_port);
+				app.certificateProcess();
+				app.commMW.SetHandler(commMW_handler);
+				//app.commFrsky.SetHandler(commFrsky_handler);
+			}
+		}).start();
 		
 	}
 
@@ -109,8 +115,15 @@ public class ControllerActivity extends FragmentActivity {
 			
 			@Override
 			public void onCameraChange(CameraPosition position) {
-				if (app.mw.GPS_fix == 1)
+				/*
+				if (app.mw.GPS_fix == 1){
 					app.MapZoomLevel = (int) position.zoom;
+				}else{
+					
+				}
+				*/
+				
+				app.MapZoomLevel = (int) position.zoom;
 			}
 		});
 	}
@@ -122,8 +135,6 @@ public class ControllerActivity extends FragmentActivity {
 			app.mw.ProcessSerialData(app.loggingON);
 			
 			if(timer < System.currentTimeMillis()){
-				ctrl_left.SetPosition(app.mw.rcRoll, app.mw.rcPitch);
-				ctrl_right.SetPosition(app.mw.rcYaw, app.mw.rcThrottle);
 				
 				ctrl_pitch.Set(app.mw.angy);
 				ctrl_roll.Set(app.mw.angx);
@@ -133,12 +144,13 @@ public class ControllerActivity extends FragmentActivity {
 				app.Frequentjobs();
 				app.mw.SendRequest(app.MainRequestMethod);
 				
+				centeringMap();
 				
 				timer = System.currentTimeMillis() + app.RefreshRate;
 			}
-			
-			centeringMap();
-			
+			ctrl_right.SetPosition(app.mw.rcYaw, app.mw.rcThrottle);
+			ctrl_left.SetPosition(app.mw.rcRoll, app.mw.rcPitch);
+						
 			int a = app.ReverseRoll? 1 : -1;
 			
 			ctrl_horizon.Set(-app.mw.angx * a, -app.mw.angy * 1.5f);
@@ -191,9 +203,9 @@ public class ControllerActivity extends FragmentActivity {
 	protected void onResume() {
 		super.onResume();
 		app.ForceLanguage();
-		
 		stop_update = false;
-		update_handler.removeCallbacks(update);
+		update_handler.postDelayed(update, 50);
+		
 	}
 	
 }
