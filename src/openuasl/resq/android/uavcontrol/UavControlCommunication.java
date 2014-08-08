@@ -7,6 +7,7 @@ import openuasl.resq.android.R;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 import communication.Communication;
 import communication.SimpleQueue;
 
@@ -107,7 +108,7 @@ public class UavControlCommunication extends Communication {
 	}
 
 	@Override
-	public byte Read() {
+	public synchronized byte Read() {
 		BytesRecieved+=1;
 		return (byte) (mw_fifo.get() & 0xff);
 	}
@@ -179,8 +180,11 @@ public class UavControlCommunication extends Communication {
 				len = client.read(rbuf);
 			} catch (IOException e) {
 				e.printStackTrace();
+				Log.i("UavControlCommunication", e.getMessage());
 			}
 
+			if(len == 0)	return;
+			
 			switch(rbuf[0]){
 			case mw_rep_header:
 				putMWData(rbuf, len);

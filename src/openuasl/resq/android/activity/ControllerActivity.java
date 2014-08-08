@@ -148,9 +148,11 @@ public class ControllerActivity extends FragmentActivity {
 				
 				timer = System.currentTimeMillis() + app.RefreshRate;
 			}
-			ctrl_right.SetPosition(app.mw.rcYaw, app.mw.rcThrottle);
-			ctrl_left.SetPosition(app.mw.rcRoll, app.mw.rcPitch);
-						
+			ctrl_right.SetPosition(app.mw.rcRoll, app.mw.rcThrottle);
+			ctrl_left.SetPosition(app.mw.rcYaw, app.mw.rcPitch);
+			
+			app.mw.SendRequestMSP(app.mw.MSP_RC);
+			
 			int a = app.ReverseRoll? 1 : -1;
 			
 			ctrl_horizon.Set(-app.mw.angx * a, -app.mw.angy * 1.5f);
