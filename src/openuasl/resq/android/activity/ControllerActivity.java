@@ -139,24 +139,25 @@ public class ControllerActivity extends FragmentActivity {
 		
 		@Override
 		public void run() {
+			
 			if(ui_timer < System.currentTimeMillis()){
 				ctrl_pitch.Set(app.mw.angy);
 				ctrl_roll.Set(app.mw.angx);
 				ctrl_info.setText(getInformationString());
 				centeringMap();
-								
 				ctrl_horizon.Set(-app.mw.angx * a, -app.mw.angy * 1.5f);
 				ctrl_altitude.Set(app.mw.alt * 10);
 				ctrl_heading.Set(app.mw.head);
 				ctrl_vario.Set(app.mw.vario * 0.6f);
+				
 				ui_timer = System.currentTimeMillis() + app.RefreshRate;
 			}
 			
 			ctrl_right.SetPosition(app.mw.rcRoll, app.mw.rcThrottle);
 			ctrl_left.SetPosition(app.mw.rcYaw, app.mw.rcPitch);
-						
+			
 			if (!stop_update)
-				ui_update_handler.postDelayed(ui_update, 50);
+				ui_update_handler.postDelayed(ui_update, 20);
 		}
 	};
 		
@@ -167,20 +168,21 @@ public class ControllerActivity extends FragmentActivity {
 			app.commMW.Connect(UavControlConf.server_ip, UavControlConf.server_port);
 			app.certificateProcess();
 			app.commMW.SetHandler(commMW_handler);
-						
+
 			while(!stop_update){
 				app.mw.ProcessSerialData(app.loggingON);
 				
 				if(timer < System.currentTimeMillis()){
 					app.Frequentjobs();
 					app.mw.SendRequest(app.MainRequestMethod);
-										
+					
 					timer = System.currentTimeMillis() + app.RefreshRate;
 				}
+				
 				app.mw.SendRequestMSP(app.mw.MSP_RC);
 				
 				try {
-					Thread.sleep(50);
+					Thread.sleep(5);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -229,7 +231,7 @@ public class ControllerActivity extends FragmentActivity {
 		super.onResume();
 		app.ForceLanguage();
 		stop_update = false;
-		ui_update_handler.postDelayed(ui_update, 50);
+		ui_update_handler.postDelayed(ui_update, 20);
 		
 	}
 	
