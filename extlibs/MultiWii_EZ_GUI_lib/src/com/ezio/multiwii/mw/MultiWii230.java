@@ -359,15 +359,15 @@ public class MultiWii230 extends MultirotorData {
 		}
 	}
 
-	int c_state = IDLE;
-	byte c;
-	boolean err_rcvd = false;
-	int offset = 0, dataSize = 0;
-	byte checksum = 0;
-	byte cmd;
-	byte[] inBuf = new byte[256];
-	int i = 0;
-	int p = 0;
+	protected int c_state = IDLE;
+	protected byte c;
+	protected boolean err_rcvd = false;
+	protected int offset = 0, dataSize = 0;
+	protected byte checksum = 0;
+	protected byte cmd;
+	protected byte[] inBuf = new byte[256];
+	protected int i = 0;
+	protected int p = 0;
 
 	int read32() {
 		return (inBuf[p++] & 0xff) + ((inBuf[p++] & 0xff) << 8) + ((inBuf[p++] & 0xff) << 16) + ((inBuf[p++] & 0xff) << 24);
@@ -381,7 +381,7 @@ public class MultiWii230 extends MultirotorData {
 		return inBuf[p++] & 0xff;
 	}
 
-	private void ReadFrame() {
+	protected void ReadFrame() {
 		DataFlow--;
 
 		while (communication.dataAvailable()) {

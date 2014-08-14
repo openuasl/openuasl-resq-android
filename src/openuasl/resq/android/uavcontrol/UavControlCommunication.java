@@ -29,6 +29,7 @@ public class UavControlCommunication extends Communication {
 	byte[] rbuf = new byte[4096]; // 1byte <--slow-- [Transfer Speed]
 										// --fast-->
 										// 4096 byte
+	long recv=0;
 	
 	public UavControlCommunication(Context context, ResquerClient c) {
 		super(context);
@@ -107,7 +108,7 @@ public class UavControlCommunication extends Communication {
 	}
 	
 	@Override
-	public boolean dataAvailable() {
+	public synchronized boolean dataAvailable() {
 		return !mw_fifo.isEmpty();
 	}
 
@@ -115,9 +116,17 @@ public class UavControlCommunication extends Communication {
 	public synchronized byte Read() {
 		BytesRecieved+=1;
 		
-		//Log.i("Control dr", Long.toString(BytesRecieved - BytesSent));
+		Log.i("Control dr", Long.toString(recv - BytesRecieved));
 		
-		return (byte) (mw_fifo.get() & 0xff);
+		byte tmp = (byte)( mw_fifo.get() & 0xff);
+		
+		if(recv - BytesRecieved > 1024){
+			mw_fifo.clear();
+			recv=0;
+			BytesRecieved=0;
+		}
+		
+		return tmp;
 	}
 
 	@Override
@@ -175,7 +184,7 @@ public class UavControlCommunication extends Communication {
 
 	}
 	
-	private synchronized void readToBuffer(){
+	private void readToBuffer(){
 		Connected = client.isAuth();
 				
 		if (client.isAuth()) {
@@ -188,8 +197,8 @@ public class UavControlCommunication extends Communication {
 			}
 
 			if(len == 0)	return;
-			
-			Log.i("read buf", Integer.toString(len));
+					
+			recv += len;
 			
 			switch(rbuf[0]){
 			case mw_rep_header:
@@ -208,7 +217,7 @@ public class UavControlCommunication extends Communication {
 		}
 	}
 	
-	private void putMWData(byte[] buf, int len){
+	private synchronized void putMWData(byte[] buf, int len){
 		//mHandler.obtainMessage(MESSAGE_READ, len, -1, buf).sendToTarget();
 		
 		for (int i = 1; i < len; i++)
@@ -224,7 +233,7 @@ public class UavControlCommunication extends Communication {
 				while (!loopStop) {
 					readToBuffer();
 					try {
-						Thread.sleep(5);
+						Thread.sleep(50);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}

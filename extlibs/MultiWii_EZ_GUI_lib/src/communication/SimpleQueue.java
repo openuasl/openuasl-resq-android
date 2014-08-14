@@ -45,6 +45,10 @@ public class SimpleQueue<E> {
 		return res;
 	}
 
+	public void clear(){
+		list.clear();
+	}
+	
 	/**
 	 * Peeks an element in the queue. Returned elements is not removed from the
 	 * queue.

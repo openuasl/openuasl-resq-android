@@ -18,6 +18,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.ezio.multiwii.app.App;
+import com.ezio.multiwii.mw.MultiWii230;
 
 
 public class ResquerApp extends App {
@@ -85,7 +86,7 @@ public class ResquerApp extends App {
 		super.Init();
 		super.MapZoomLevel = 15;
 	}
-	
+		
 	private void setDeviceId() {
 
 		if (devid_hex_num.compareTo("") != 0)

@@ -9,6 +9,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.Window;
@@ -86,7 +87,6 @@ public class ControllerActivity extends FragmentActivity {
 		update_thread = new Thread(update);
 		update_thread.start();
 		/*
-		
 		new Thread(new Runnable() {	
 			@Override
 			public void run() {
@@ -154,12 +154,12 @@ public class ControllerActivity extends FragmentActivity {
 			
 			ctrl_right.SetPosition(app.mw.rcRoll, app.mw.rcThrottle);
 			ctrl_left.SetPosition(app.mw.rcYaw, app.mw.rcPitch);
-			
+						
 			if (!stop_update)
-				ui_update_handler.postDelayed(ui_update, 20);
+				ui_update_handler.postDelayed(ui_update, 50);
 		}
 	};
-	
+		
 	private Runnable update = new Runnable() {
 		
 		@Override
@@ -167,21 +167,20 @@ public class ControllerActivity extends FragmentActivity {
 			app.commMW.Connect(UavControlConf.server_ip, UavControlConf.server_port);
 			app.certificateProcess();
 			app.commMW.SetHandler(commMW_handler);
-			
+						
 			while(!stop_update){
 				app.mw.ProcessSerialData(app.loggingON);
-								
+				
 				if(timer < System.currentTimeMillis()){
 					app.Frequentjobs();
 					app.mw.SendRequest(app.MainRequestMethod);
 										
 					timer = System.currentTimeMillis() + app.RefreshRate;
 				}
-								
 				app.mw.SendRequestMSP(app.mw.MSP_RC);
 				
 				try {
-					Thread.sleep(20);
+					Thread.sleep(50);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -230,7 +229,7 @@ public class ControllerActivity extends FragmentActivity {
 		super.onResume();
 		app.ForceLanguage();
 		stop_update = false;
-		ui_update_handler.postDelayed(ui_update, 20);
+		ui_update_handler.postDelayed(ui_update, 50);
 		
 	}
 	
