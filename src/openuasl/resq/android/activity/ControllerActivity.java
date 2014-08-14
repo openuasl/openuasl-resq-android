@@ -48,16 +48,19 @@ public class ControllerActivity extends FragmentActivity {
 	VarioView ctrl_vario;
 	
 	TextView ctrl_info;
-	
+	Thread update_thread;
 	
 	private final Handler commMW_handler = new Handler();
 	//private final Handler commFrsky_handler = new Handler();
-	private Handler update_handler = new Handler();
+	private Handler ui_update_handler = new Handler();
 	private boolean stop_update = false;
 	
 	private long timer = 0;
+	private long ui_timer = 0;
 	private long center_step = 0;
 	private boolean move_map = true;
+	
+	private int a;
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -77,8 +80,12 @@ public class ControllerActivity extends FragmentActivity {
 		sv_view = (RelativeLayout)inflater.inflate(R.layout.controller_surface_view, null);
 		
 		app = (ResquerApp)getApplication();
-		
+		a = app.ReverseRoll? -1 : 1;
 		initControlViews();
+		
+		update_thread = new Thread(update);
+		update_thread.start();
+		/*
 		
 		new Thread(new Runnable() {	
 			@Override
@@ -89,7 +96,7 @@ public class ControllerActivity extends FragmentActivity {
 				//app.commFrsky.SetHandler(commFrsky_handler);
 			}
 		}).start();
-		
+		*/
 	}
 
 	private void initControlViews(){
@@ -128,41 +135,58 @@ public class ControllerActivity extends FragmentActivity {
 		});
 	}
 	
+	private Runnable ui_update = new Runnable() {
+		
+		@Override
+		public void run() {
+			if(ui_timer < System.currentTimeMillis()){
+				ctrl_pitch.Set(app.mw.angy);
+				ctrl_roll.Set(app.mw.angx);
+				ctrl_info.setText(getInformationString());
+				centeringMap();
+								
+				ctrl_horizon.Set(-app.mw.angx * a, -app.mw.angy * 1.5f);
+				ctrl_altitude.Set(app.mw.alt * 10);
+				ctrl_heading.Set(app.mw.head);
+				ctrl_vario.Set(app.mw.vario * 0.6f);
+				ui_timer = System.currentTimeMillis() + app.RefreshRate;
+			}
+			
+			ctrl_right.SetPosition(app.mw.rcRoll, app.mw.rcThrottle);
+			ctrl_left.SetPosition(app.mw.rcYaw, app.mw.rcPitch);
+			
+			if (!stop_update)
+				ui_update_handler.postDelayed(ui_update, 20);
+		}
+	};
+	
 	private Runnable update = new Runnable() {
 		
 		@Override
 		public void run() {
-			app.mw.ProcessSerialData(app.loggingON);
+			app.commMW.Connect(UavControlConf.server_ip, UavControlConf.server_port);
+			app.certificateProcess();
+			app.commMW.SetHandler(commMW_handler);
 			
-			if(timer < System.currentTimeMillis()){
+			while(!stop_update){
+				app.mw.ProcessSerialData(app.loggingON);
+								
+				if(timer < System.currentTimeMillis()){
+					app.Frequentjobs();
+					app.mw.SendRequest(app.MainRequestMethod);
+										
+					timer = System.currentTimeMillis() + app.RefreshRate;
+				}
+								
+				app.mw.SendRequestMSP(app.mw.MSP_RC);
 				
-				ctrl_pitch.Set(app.mw.angy);
-				ctrl_roll.Set(app.mw.angx);
-
-				ctrl_info.setText(getInformationString());
-							
-				app.Frequentjobs();
-				app.mw.SendRequest(app.MainRequestMethod);
-				
-				centeringMap();
-				
-				timer = System.currentTimeMillis() + app.RefreshRate;
+				try {
+					Thread.sleep(20);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
-			ctrl_right.SetPosition(app.mw.rcRoll, app.mw.rcThrottle);
-			ctrl_left.SetPosition(app.mw.rcYaw, app.mw.rcPitch);
-			
-			app.mw.SendRequestMSP(app.mw.MSP_RC);
-			
-			int a = app.ReverseRoll? 1 : -1;
-			
-			ctrl_horizon.Set(-app.mw.angx * a, -app.mw.angy * 1.5f);
-			ctrl_altitude.Set(app.mw.alt * 10);
-			ctrl_heading.Set(app.mw.head);
-			ctrl_vario.Set(app.mw.vario * 0.6f);
-						
-			if (!stop_update)
-				update_handler.postDelayed(update, 50);
-			
 		}
 	};
 	
@@ -198,7 +222,7 @@ public class ControllerActivity extends FragmentActivity {
 	protected void onPause() {
 		super.onPause();
 		stop_update = true;
-		update_handler.removeCallbacks(update);
+		ui_update_handler.removeCallbacks(ui_update);
 	}
 	
 	@Override
@@ -206,7 +230,7 @@ public class ControllerActivity extends FragmentActivity {
 		super.onResume();
 		app.ForceLanguage();
 		stop_update = false;
-		update_handler.postDelayed(update, 50);
+		ui_update_handler.postDelayed(ui_update, 20);
 		
 	}
 	

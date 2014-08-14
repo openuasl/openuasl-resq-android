@@ -61,22 +61,7 @@ public class ResquerClient extends UavAuthorizationClient {
 	}
 	
 	public void write(byte[] arr) throws IOException{
-		final byte[] buf = arr;		
-		
-		new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				try {
-					out_stream.write(buf);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}).start();
-		
-		
+		out_stream.write(arr);
 	}
 
 	public int read(byte[] arr) throws IOException{

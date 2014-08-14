@@ -50,8 +50,15 @@ public class UavCameraStreamerThread extends Thread {
 		Log.i("Streamming Thread","Run!!");
 		streamer.startStramming();
 		
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		while (streamer.isConnected()) {
-			
+						
 			byte[] data = streamer.receive1Frame();
 			
 			if(data == null) continue;				
@@ -74,6 +81,13 @@ public class UavCameraStreamerThread extends Thread {
 					 
 					mHolder.unlockCanvasAndPost(canvas);
 				}
+			}
+			
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}		
 	}

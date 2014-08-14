@@ -26,6 +26,10 @@ public class UavControlCommunication extends Communication {
 	
 	public boolean loopStop = false;
 	
+	byte[] rbuf = new byte[4096]; // 1byte <--slow-- [Transfer Speed]
+										// --fast-->
+										// 4096 byte
+	
 	public UavControlCommunication(Context context, ResquerClient c) {
 		super(context);
 		client = c;
@@ -110,6 +114,9 @@ public class UavControlCommunication extends Communication {
 	@Override
 	public synchronized byte Read() {
 		BytesRecieved+=1;
+		
+		//Log.i("Control dr", Long.toString(BytesRecieved - BytesSent));
+		
 		return (byte) (mw_fifo.get() & 0xff);
 	}
 
@@ -170,10 +177,7 @@ public class UavControlCommunication extends Communication {
 	
 	private synchronized void readToBuffer(){
 		Connected = client.isAuth();
-		
-		byte[] rbuf = new byte[4096]; // 1byte <--slow-- [Transfer Speed]
-											// --fast-->
-											// 4096 byte
+				
 		if (client.isAuth()) {
 			int len = 0;
 			try {
@@ -184,6 +188,8 @@ public class UavControlCommunication extends Communication {
 			}
 
 			if(len == 0)	return;
+			
+			Log.i("read buf", Integer.toString(len));
 			
 			switch(rbuf[0]){
 			case mw_rep_header:

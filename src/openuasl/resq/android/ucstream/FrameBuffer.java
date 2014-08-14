@@ -29,7 +29,10 @@ public class FrameBuffer {
 		Log.i("lost frame : ", Integer.toString(frame_count));
 		frame_count = 0;
 		
-		return buffer;
+		byte[] r = buffer;
+		buffer = null;
+		
+		return r;
 	}
 
 }
