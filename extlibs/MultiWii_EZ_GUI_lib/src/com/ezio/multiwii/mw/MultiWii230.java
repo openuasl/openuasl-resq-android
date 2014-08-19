@@ -46,7 +46,7 @@ public class MultiWii230 extends MultirotorData {
 		init();
 	}
 
-	private void init() {
+	protected void init() {
 		CHECKBOXITEMS = BoxNames.length;
 		activation = new int[CHECKBOXITEMS];
 		ActiveModes = new boolean[CHECKBOXITEMS];
@@ -369,15 +369,15 @@ public class MultiWii230 extends MultirotorData {
 	protected int i = 0;
 	protected int p = 0;
 
-	int read32() {
+	protected int read32() {
 		return (inBuf[p++] & 0xff) + ((inBuf[p++] & 0xff) << 8) + ((inBuf[p++] & 0xff) << 16) + ((inBuf[p++] & 0xff) << 24);
 	}
 
-	int read16() {
+	protected int read16() {
 		return (inBuf[p++] & 0xff) + ((inBuf[p++]) << 8);
 	}
 
-	int read8() {
+	protected int read8() {
 		return inBuf[p++] & 0xff;
 	}
 

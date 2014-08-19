@@ -14,6 +14,7 @@ public class StickControlView extends Stick2View {
 	
 	// false : RollPitchController
 	public boolean throttle;
+	public float th_y;
 	
 	private int pos_center;
 	private double pos_range;
@@ -38,7 +39,7 @@ public class StickControlView extends Stick2View {
 		void onRawRCSetEvent(float x, float y);
 	};
 	
-	protected void setOnRawRCSetListener(OnRawRCSetListener listener){
+	public void setOnRawRCSetListener(OnRawRCSetListener listener){
 		this.listener = listener;
 	}
 	
@@ -46,14 +47,34 @@ public class StickControlView extends Stick2View {
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		
-			float px = cvtXPosToValue(event.getX());
-			float py = cvtYPosToValue(event.getY());
+		int action = event.getAction();
+		
+		switch(action){
+		case MotionEvent.ACTION_UP:
+			
+			if(listener != null){
+				if(this.throttle){
+					listener.onRawRCSetEvent(1500, th_y);
+					SetPosition(1500,th_y);
+				}else{
+					listener.onRawRCSetEvent(1500, 1500);
+					SetPosition(1500,1500);
+				}
+			}
 						
-			SetPosition(px,py);
+			return false;
+		case MotionEvent.ACTION_MOVE:
+		case MotionEvent.ACTION_DOWN:
+			float px = cvtXPosToValue(event.getX());
+			th_y = cvtYPosToValue(event.getY());
+						
+			SetPosition(px,th_y);
 			
 			if(listener != null)
-				listener.onRawRCSetEvent(px, py);
-		
+				listener.onRawRCSetEvent(px, th_y);
+			break;
+		}
+				
 		return true;
 	}
 	

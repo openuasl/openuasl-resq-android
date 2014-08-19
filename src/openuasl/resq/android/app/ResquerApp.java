@@ -9,6 +9,7 @@ import java.security.NoSuchAlgorithmException;
 import openuasl.resq.android.R;
 import openuasl.resq.android.activity.QRCodeActivity;
 import openuasl.resq.android.auth.OnQRCodeCertResultListener;
+import openuasl.resq.android.uavcontrol.MultiWii230_EX;
 import openuasl.resq.android.uavcontrol.OnStartControlListener;
 import openuasl.resq.android.uavcontrol.ResquerClient;
 import openuasl.resq.android.uavcontrol.UavControlCommunication;
@@ -85,6 +86,14 @@ public class ResquerApp extends App {
 				getApplicationContext(), client);
 		super.Init();
 		super.MapZoomLevel = 15;
+	}
+	
+	@Override
+	public void SelectProtocol() {
+		// TODO Auto-generated method stub
+		super.SelectProtocol();
+		
+		mw = new MultiWii230_EX(commMW);
 	}
 		
 	private void setDeviceId() {

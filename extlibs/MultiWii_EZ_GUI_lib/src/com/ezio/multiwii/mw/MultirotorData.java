@@ -122,8 +122,8 @@ public abstract class MultirotorData {
 	final int VTAIL4 = 17;
 	final int HEX6H = 18;
 	final int PPM_TO_SERVO = 19;
-	final int DUALCOPTER = 20;
-	final int SINGLECOPTER = 21;
+	protected final int DUALCOPTER = 20;
+	protected final int SINGLECOPTER = 21;
 
 	public int PIDITEMS = 10;
 	public int CHECKBOXITEMS = 11; // in 2.1
@@ -174,7 +174,7 @@ public abstract class MultirotorData {
 	public int MagPresent;
 	public int GPSPresent;
 	public int SonarPresent;
-	int activation[];
+	protected int activation[];
 
 	public float timer1, timer2;
 	public int cycleTime, i2cError;
@@ -183,7 +183,7 @@ public abstract class MultirotorData {
 	public Boolean[][] Checkbox = new Boolean[CHECKBOXITEMS][12]; // state of
 																	// chexboxes
 
-	int byteMP[] = new int[8]; // Motor // Pins. // Varies // by // multiType //
+	protected int byteMP[] = new int[8]; // Motor // Pins. // Varies // by // multiType //
 								// and // Arduino // model // (pro // Mini, //
 								// // Mega, // etc).
 

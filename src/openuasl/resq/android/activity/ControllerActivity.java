@@ -30,7 +30,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 
 
-public class ControllerActivity extends FragmentActivity implements StickControlView.OnRawRCSetListener {
+public class ControllerActivity extends FragmentActivity{
 
 	ResquerApp app;
 	MapHelperClass map_helper;
@@ -38,6 +38,8 @@ public class ControllerActivity extends FragmentActivity implements StickControl
 	SurfaceView sv;
 	StickControlView ctrl_left;
 	StickControlView ctrl_right;
+	StickControlView.OnRawRCSetListener ctrl_left_listener;
+	StickControlView.OnRawRCSetListener ctrl_right_listener;
 	
 	// left
 	PitchRollView ctrl_pitch;
@@ -84,6 +86,7 @@ public class ControllerActivity extends FragmentActivity implements StickControl
 		app = (ResquerApp)getApplication();
 		a = app.ReverseRoll? -1 : 1;
 		initControlViews();
+		app.mw.rcThrottle = 980;
 		
 		update_thread = new Thread(update);
 		update_thread.start();
@@ -100,11 +103,40 @@ public class ControllerActivity extends FragmentActivity implements StickControl
 		*/
 	}
 
+	public volatile boolean changed;
+	public volatile int roll=1500;
+	public volatile int pitch=1500;
+	public volatile int yaw=1500;
+	public volatile int throttle=1000;
+	
 	private void initControlViews(){
 		ctrl_left = (StickControlView)findViewById(R.id.ctrlui_left);
+		ctrl_left_listener = new StickControlView.OnRawRCSetListener() {
+			
+			@Override
+			public void onRawRCSetEvent(float x, float y) {
+				yaw = (int)x;
+				pitch = (int)y;
+				
+				changed = true;
+			}
+		};
+		ctrl_left.setOnRawRCSetListener(ctrl_left_listener);
+		
 		ctrl_right = (StickControlView)findViewById(R.id.ctrlui_right);
 		ctrl_right.throttle = true;
+		ctrl_right_listener = new StickControlView.OnRawRCSetListener() {
+			
+			@Override
+			public void onRawRCSetEvent(float x, float y) {
+				roll = (int)x;
+				throttle = (int)y;
 				
+				changed = true;
+			}
+		};
+		ctrl_right.setOnRawRCSetListener(ctrl_right_listener);		
+		
 		ctrl_roll = (PitchRollView)findViewById(R.id.ctrlui_roll);
 		ctrl_pitch = (PitchRollView)findViewById(R.id.ctrlui_pitch);
 		ctrl_pitch.arrow = true;
@@ -154,18 +186,28 @@ public class ControllerActivity extends FragmentActivity implements StickControl
 				ui_timer = System.currentTimeMillis() + app.RefreshRate;
 			}
 			
-			ctrl_right.SetPosition(app.mw.rcRoll, app.mw.rcThrottle);
-			ctrl_left.SetPosition(app.mw.rcYaw, app.mw.rcPitch);
+			//ctrl_right.SetPosition(app.mw.rcRoll, app.mw.rcThrottle);
+			//ctrl_left.SetPosition(app.mw.rcYaw, app.mw.rcPitch);
 			
 			if (!stop_update)
 				ui_update_handler.postDelayed(ui_update, 20);
 		}
 	};
+	
+	public void sendRawRCDatas() {
+		int channels[] = new int[8];
+		channels[0] = roll;
+		channels[1] = pitch;
+		channels[2] = yaw;
+		channels[3] = throttle;
+		channels[4] = app.mw.rcAUX1;
+		channels[5] = app.mw.rcAUX2;
+		channels[6] = app.mw.rcAUX3;
+		channels[7] = app.mw.rcAUX4;
 		
-	@Override
-	public void onRawRCSetEvent(float x, float y) {
-		//app.mw.SendRequestMSP_SET_RAW_RC(channels8);
+		app.mw.SendRequestMSP_SET_RAW_RC(channels);
 		
+		changed = false;
 	}
 	
 	private Runnable update = new Runnable() {
@@ -186,7 +228,10 @@ public class ControllerActivity extends FragmentActivity implements StickControl
 					timer = System.currentTimeMillis() + app.RefreshRate;
 				}
 				
-				app.mw.SendRequestMSP(app.mw.MSP_RC);
+				if(changed)
+					sendRawRCDatas();
+				
+				//app.mw.SendRequestMSP(app.mw.MSP_RC);
 				
 				try {
 					Thread.sleep(5);
