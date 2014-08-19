@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.Window;
 import android.widget.RelativeLayout;
+import android.widget.SearchView.OnCloseListener;
 import android.widget.TextView;
 
 import com.ezio.multiwii.dashboard.PitchRollView;
@@ -29,7 +30,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 
 
-public class ControllerActivity extends FragmentActivity {
+public class ControllerActivity extends FragmentActivity implements StickControlView.OnRawRCSetListener {
 
 	ResquerApp app;
 	MapHelperClass map_helper;
@@ -161,6 +162,12 @@ public class ControllerActivity extends FragmentActivity {
 		}
 	};
 		
+	@Override
+	public void onRawRCSetEvent(float x, float y) {
+		//app.mw.SendRequestMSP_SET_RAW_RC(channels8);
+		
+	}
+	
 	private Runnable update = new Runnable() {
 		
 		@Override
@@ -234,6 +241,5 @@ public class ControllerActivity extends FragmentActivity {
 		ui_update_handler.postDelayed(ui_update, 20);
 		
 	}
-	
 }
 
