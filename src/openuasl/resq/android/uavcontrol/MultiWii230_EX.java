@@ -121,16 +121,16 @@ public class MultiWii230_EX extends MultiWii230 {
 			rcAUX1 = read16();
 			rcAUX2 = read16();
 			rcAUX3 = read16();
-			rcAUX4 = read16();
-			Log.d("MSP_SET_RAW_RC", String.valueOf(rcRoll) + 
-					" " + String.valueOf(rcPitch) + 
-					" " + String.valueOf(rcYaw) + 
-					" " + String.valueOf(rcThrottle) + 
-					" " + String.valueOf(rcAUX1) + 
-					" " + String.valueOf(rcAUX2) + 
-					" " + String.valueOf(rcAUX3) + 
-					" " + String.valueOf(rcAUX4));
-			
+			rcAUX4 = read16();			
+			Log.d("aaa", "CL:" 
+					+ String.valueOf(rcRoll) + " " 
+					+ String.valueOf(rcPitch) + " " 
+					+ String.valueOf(rcYaw) + " " 
+					+ String.valueOf(rcThrottle) + " " 
+					+ String.valueOf(rcAUX1) + " "
+					+ String.valueOf(rcAUX2) + " "
+					+ String.valueOf(rcAUX3) + " " 
+					+ String.valueOf(rcAUX4));
 			break;
 		case MSP_RAW_GPS:
 			GPS_fix = read8();
@@ -268,10 +268,39 @@ public class MultiWii230_EX extends MultiWii230 {
 			break;
 
 		case MSP_SET_RAW_RC:
+			rcRoll = read16();
+			rcPitch = read16();
+			rcYaw = read16();
+			rcThrottle = read16();
+			rcAUX1 = read16();
+			rcAUX2 = read16();
+			rcAUX3 = read16();
+			rcAUX4 = read16();
+			Log.d("aaa", "RC:" 
+					+ String.valueOf(rcRoll) + " " 
+					+ String.valueOf(rcPitch) + " " 
+					+ String.valueOf(rcYaw) + " " 
+					+ String.valueOf(rcThrottle) + " " 
+					+ String.valueOf(rcAUX1) + " "
+					+ String.valueOf(rcAUX2) + " "
+					+ String.valueOf(rcAUX3) + " " 
+					+ String.valueOf(rcAUX4));
 			break;
 		default:
 			Log.e("aaa", "Error command - unknown replay " + String.valueOf(icmd));
 
 		}
+	}
+	
+	@Override
+	public void SendRequestMSP_SET_RAW_RC(int[] channels8) {
+		ArrayList<Character> payload = new ArrayList<Character>();
+		for (int i = 0; i < 8; i++) {
+			payload.add((char) (channels8[i] & 0xFF));
+			payload.add((char) ((channels8[i] >> 8) & 0xFF));
+		}
+
+		sendRequestMSP(requestMSP(MSP_SET_RAW_RC, payload.toArray(new Character[payload.size()])));
+
 	}
 }

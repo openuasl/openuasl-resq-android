@@ -116,7 +116,7 @@ public class UavControlCommunication extends Communication {
 		BytesRecieved+=1;
 		
 		if(BytesRecieved % 1024 == 0){
-			mw_fifo.clear();
+			//mw_fifo.clear();
 			BytesRecieved = 0;
 		}
 		
@@ -124,7 +124,7 @@ public class UavControlCommunication extends Communication {
 	}
 
 	@Override
-	public void Write(byte[] arr) {
+	public synchronized void Write(byte[] arr) {
 		super.Write(arr);
 		
 		super.Connected = client.isAuth();

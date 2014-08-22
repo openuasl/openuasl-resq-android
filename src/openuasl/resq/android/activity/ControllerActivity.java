@@ -4,18 +4,19 @@ import openuasl.resq.android.R;
 import openuasl.resq.android.app.ResquerApp;
 import openuasl.resq.android.uavcontrol.StickControlView;
 import openuasl.resq.android.uavcontrol.UavControlConf;
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.Window;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.SearchView.OnCloseListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ezio.multiwii.dashboard.PitchRollView;
 import com.ezio.multiwii.dashboard.dashboard3.AltitudeView;
@@ -54,6 +55,8 @@ public class ControllerActivity extends FragmentActivity{
 	TextView ctrl_info;
 	Thread update_thread;
 	
+	ProgressBar prg_loading;
+	
 	private final Handler commMW_handler = new Handler();
 	//private final Handler commFrsky_handler = new Handler();
 	private Handler ui_update_handler = new Handler();
@@ -86,28 +89,22 @@ public class ControllerActivity extends FragmentActivity{
 		app = (ResquerApp)getApplication();
 		a = app.ReverseRoll? -1 : 1;
 		initControlViews();
-		app.mw.rcThrottle = 980;
-		
+				
 		update_thread = new Thread(update);
 		update_thread.start();
-		/*
-		new Thread(new Runnable() {	
-			@Override
-			public void run() {
-				app.commMW.Connect(UavControlConf.server_ip, UavControlConf.server_port);
-				app.certificateProcess();
-				app.commMW.SetHandler(commMW_handler);
-				//app.commFrsky.SetHandler(commFrsky_handler);
-			}
-		}).start();
-		*/
+		
+		
+		
 	}
 
-	public volatile boolean changed;
-	public volatile int roll=1500;
-	public volatile int pitch=1500;
-	public volatile int yaw=1500;
-	public volatile int throttle=1000;
+	public int roll=1500;
+	public int pitch=1500;
+	public int yaw=1500;
+	public int throttle = 1000;
+	public int aux1 = 1500;
+	public int aux2 = 1500;
+	public int aux3 = 1500;
+	public int aux4 = 1500;
 	
 	private void initControlViews(){
 		ctrl_left = (StickControlView)findViewById(R.id.ctrlui_left);
@@ -117,8 +114,6 @@ public class ControllerActivity extends FragmentActivity{
 			public void onRawRCSetEvent(float x, float y) {
 				yaw = (int)x;
 				pitch = (int)y;
-				
-				changed = true;
 			}
 		};
 		ctrl_left.setOnRawRCSetListener(ctrl_left_listener);
@@ -131,8 +126,6 @@ public class ControllerActivity extends FragmentActivity{
 			public void onRawRCSetEvent(float x, float y) {
 				roll = (int)x;
 				throttle = (int)y;
-				
-				changed = true;
 			}
 		};
 		ctrl_right.setOnRawRCSetListener(ctrl_right_listener);		
@@ -150,7 +143,6 @@ public class ControllerActivity extends FragmentActivity{
 		ctrl_info = (TextView)findViewById(R.id.ctrlui_info);
 		
 		map_helper = new MapHelperClass(((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap(), 5);
-				
 		map_helper.map.setOnCameraChangeListener(new OnCameraChangeListener() {
 			
 			@Override
@@ -166,13 +158,14 @@ public class ControllerActivity extends FragmentActivity{
 				app.MapZoomLevel = (int) position.zoom;
 			}
 		});
+		
+		prg_loading = (ProgressBar)findViewById(R.id.ctrlui_loading);
 	}
 	
 	private Runnable ui_update = new Runnable() {
 		
 		@Override
-		public void run() {
-			
+		public void run() {			
 			if(ui_timer < System.currentTimeMillis()){
 				ctrl_pitch.Set(app.mw.angy);
 				ctrl_roll.Set(app.mw.angx);
@@ -200,45 +193,56 @@ public class ControllerActivity extends FragmentActivity{
 		channels[1] = pitch;
 		channels[2] = yaw;
 		channels[3] = throttle;
-		channels[4] = app.mw.rcAUX1;
-		channels[5] = app.mw.rcAUX2;
-		channels[6] = app.mw.rcAUX3;
-		channels[7] = app.mw.rcAUX4;
-		
+		channels[4] = aux1;
+		channels[5] = aux2;
+		channels[6] = aux3;
+		channels[7] = aux4;
+
 		app.mw.SendRequestMSP_SET_RAW_RC(channels);
 		
-		changed = false;
+		Log.d("aaa", "SD:" 
+				+ String.valueOf(roll) + " " 
+				+ String.valueOf(pitch) + " " 
+				+ String.valueOf(yaw) + " " 
+				+ String.valueOf(throttle) + " " 
+				+ String.valueOf(aux1) + " "
+				+ String.valueOf(aux2) + " "
+				+ String.valueOf(aux3) + " " 
+				+ String.valueOf(aux4));
 	}
 	
 	private Runnable update = new Runnable() {
 		
 		@Override
-		public void run() {
+		public void run() {						
 			app.commMW.Connect(UavControlConf.server_ip, UavControlConf.server_port);
 			app.certificateProcess();
 			app.commMW.SetHandler(commMW_handler);
 
-			while(!stop_update){
-				app.mw.ProcessSerialData(app.loggingON);
-				
-				if(timer < System.currentTimeMillis()){
-					app.Frequentjobs();
-					app.mw.SendRequest(app.MainRequestMethod);
-					
-					timer = System.currentTimeMillis() + app.RefreshRate;
+			try {
+				Thread.sleep(7000);
+
+				while (!stop_update) {
+					app.mw.ProcessSerialData(app.loggingON);
+
+					if (timer < System.currentTimeMillis()) {
+						app.Frequentjobs();
+						app.mw.SendRequest(app.MainRequestMethod);
+						Thread.sleep(100);
+						app.mw.ProcessSerialData(app.loggingON);
+						timer = System.currentTimeMillis() + app.RefreshRate;
+					}else{
+						app.mw.SendRequestMSP(app.mw.MSP_RC);
+						Thread.sleep(25);
+						app.mw.ProcessSerialData(app.loggingON);
+						sendRawRCDatas();
+						Thread.sleep(25);
+						app.mw.ProcessSerialData(app.loggingON);
+					}
 				}
-				
-				if(changed)
-					sendRawRCDatas();
-				
-				//app.mw.SendRequestMSP(app.mw.MSP_RC);
-				
-				try {
-					Thread.sleep(5);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 	};
