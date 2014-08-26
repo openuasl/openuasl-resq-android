@@ -64,10 +64,10 @@ public class UavCameraStreamerThread extends Thread {
 			if(data == null) continue;				
 			
 			bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-
 			Bitmap resized = Bitmap.createScaledBitmap(bitmap, dsp_w, dsp_h, true);
 			
 			canvas = mHolder.lockCanvas();
+			if(canvas == null)	break;
 
 			try {
 
@@ -89,7 +89,9 @@ public class UavCameraStreamerThread extends Thread {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}		
+		}
+		
+		streamer.sendStopStreamming();
 	}
-	
+		
 }

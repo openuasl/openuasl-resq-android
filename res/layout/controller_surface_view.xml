@@ -4,9 +4,8 @@
     android:layout_height="match_parent" >
 
     <openuasl.resq.android.ucstream.UavCameraView
-        android:id="@+id/surface_view"
+        android:id="@+id/cam_view"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        class="bssm.blueeyes.imgstream.ImgStreamView" />
+        android:layout_height="fill_parent" />
     
 </RelativeLayout>

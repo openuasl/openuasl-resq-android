@@ -12,8 +12,7 @@ import communication.Communication;
 public class MultiWii230_EX extends MultiWii230 {
 
 	public MultiWii230_EX(Communication bt) {
-		super(bt);
-		// TODO Auto-generated constructor stub
+		super(bt);		
 	}
 
 	@Override

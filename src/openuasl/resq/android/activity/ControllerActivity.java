@@ -4,6 +4,7 @@ import openuasl.resq.android.R;
 import openuasl.resq.android.app.ResquerApp;
 import openuasl.resq.android.uavcontrol.StickControlView;
 import openuasl.resq.android.uavcontrol.UavControlConf;
+import openuasl.resq.android.ucstream.UavCameraView;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,6 +26,7 @@ import com.ezio.multiwii.dashboard.dashboard3.HorizonView;
 import com.ezio.multiwii.dashboard.dashboard3.VarioView;
 import com.ezio.multiwii.waypoints.MapHelperClass;
 import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -36,7 +38,7 @@ public class ControllerActivity extends FragmentActivity{
 	ResquerApp app;
 	MapHelperClass map_helper;
 	RelativeLayout sv_view;
-	SurfaceView sv;
+	UavCameraView cam_view;
 	StickControlView ctrl_left;
 	StickControlView ctrl_right;
 	StickControlView.OnRawRCSetListener ctrl_left_listener;
@@ -81,6 +83,7 @@ public class ControllerActivity extends FragmentActivity{
 		win.addContentView(controller_layout, param);
 				
 		sv_view = (RelativeLayout)inflater.inflate(R.layout.controller_surface_view, null);
+		cam_view = (UavCameraView)sv_view.findViewById(R.id.cam_view);
 		
 		app = (ResquerApp)getApplication();
 		a = app.ReverseRoll? -1 : 1;
@@ -124,7 +127,7 @@ public class ControllerActivity extends FragmentActivity{
 				throttle = (int)y;
 			}
 		};
-		ctrl_right.setOnRawRCSetListener(ctrl_right_listener);		
+		ctrl_right.setOnRawRCSetListener(ctrl_right_listener);
 		
 		ctrl_roll = (PitchRollView)findViewById(R.id.ctrlui_roll);
 		ctrl_pitch = (PitchRollView)findViewById(R.id.ctrlui_pitch);
@@ -143,18 +146,13 @@ public class ControllerActivity extends FragmentActivity{
 			
 			@Override
 			public void onCameraChange(CameraPosition position) {
-				/*
 				if (app.mw.GPS_fix == 1){
 					app.MapZoomLevel = (int) position.zoom;
-				}else{
-					
 				}
-				*/
-				
-				app.MapZoomLevel = (int) position.zoom;
 			}
 		});
 
+		map_helper.map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 	}
 	
 	private Runnable ui_update = new Runnable() {
@@ -239,8 +237,13 @@ public class ControllerActivity extends FragmentActivity{
 		String s = "";
 		s += getString(R.string.Altitude) + ":" + String.valueOf(app.mw.alt) + "\n";
 		s += getString(R.string.Battery) + ":" + String.valueOf((float) (app.mw.bytevbat / 10.0)) + "\n";
-		s += getString(R.string.Satellites) + ":" + String.valueOf(app.mw.GPS_numSat) + "\n";
+		s += getString(R.string.GPS_altitude) + ":" + String.valueOf(app.mw.GPS_altitude) + "\n";
+		s += getString(R.string.GPS_latitude) + ":" + String.valueOf(app.mw.GPS_latitude) + "\n";
+		s += getString(R.string.GPS_longitude) + ":" + String.valueOf(app.mw.GPS_longitude) + "\n";
 		s += getString(R.string.GPS_speed) + ":" + String.valueOf(app.mw.GPS_speed) + "\n";
+		s += getString(R.string.Satellites) + ":" + String.valueOf(app.mw.GPS_numSat) + "\n";
+		s += getString(R.string.GPS_distanceToHome) + ":" + String.valueOf(app.mw.GPS_distanceToHome) + "\n";
+		s += getString(R.string.GPS_directionToHome) + ":" + String.valueOf(app.mw.GPS_directionToHome) + "\n";
 		s += getString(R.string.CycleTime) + ":" + String.valueOf(app.mw.cycleTime) + "\n";
 		
 		return s;
@@ -282,7 +285,6 @@ public class ControllerActivity extends FragmentActivity{
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
-		
 		
 	}
 }
