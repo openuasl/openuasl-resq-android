@@ -81,10 +81,14 @@ public class LoginActivity extends Activity {
 		super.onResume();
 		tv_uavid.setText(QRCodeActivity.qrvalueresult);
 
+		if(ck == -1)	return;
+		
 		if (QRCodeActivity.qrvalueresult.compareTo("") != 0) {
 			startActivity(new Intent(LoginActivity.this,
 					ControllerActivity.class));
 		}
+		
+		ck = -1;
 	}
 	
 	

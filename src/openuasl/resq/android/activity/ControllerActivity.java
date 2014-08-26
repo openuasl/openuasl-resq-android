@@ -54,16 +54,12 @@ public class ControllerActivity extends FragmentActivity{
 	
 	TextView ctrl_info;
 	Thread update_thread;
-	
-	ProgressBar prg_loading;
-	
+		
 	private final Handler commMW_handler = new Handler();
-	//private final Handler commFrsky_handler = new Handler();
 	private Handler ui_update_handler = new Handler();
 	private boolean stop_update = false;
 	
 	private long timer = 0;
-	private long ui_timer = 0;
 	private long center_step = 0;
 	private boolean move_map = true;
 	
@@ -158,32 +154,24 @@ public class ControllerActivity extends FragmentActivity{
 				app.MapZoomLevel = (int) position.zoom;
 			}
 		});
-		
-		prg_loading = (ProgressBar)findViewById(R.id.ctrlui_loading);
+
 	}
 	
 	private Runnable ui_update = new Runnable() {
-		
+
 		@Override
-		public void run() {			
-			if(ui_timer < System.currentTimeMillis()){
-				ctrl_pitch.Set(app.mw.angy);
-				ctrl_roll.Set(app.mw.angx);
-				ctrl_info.setText(getInformationString());
-				centeringMap();
-				ctrl_horizon.Set(-app.mw.angx * a, -app.mw.angy * 1.5f);
-				ctrl_altitude.Set(app.mw.alt * 10);
-				ctrl_heading.Set(app.mw.head);
-				ctrl_vario.Set(app.mw.vario * 0.6f);
-				
-				ui_timer = System.currentTimeMillis() + app.RefreshRate;
-			}
-			
-			//ctrl_right.SetPosition(app.mw.rcRoll, app.mw.rcThrottle);
-			//ctrl_left.SetPosition(app.mw.rcYaw, app.mw.rcPitch);
-			
+		public void run() {
+			ctrl_pitch.Set(app.mw.angy);
+			ctrl_roll.Set(app.mw.angx);
+			ctrl_info.setText(getInformationString());
+			centeringMap();
+			ctrl_horizon.Set(-app.mw.angx * a, -app.mw.angy * 1.5f);
+			ctrl_altitude.Set(app.mw.alt * 10);
+			ctrl_heading.Set(app.mw.head);
+			ctrl_vario.Set(app.mw.vario * 0.6f);
+
 			if (!stop_update)
-				ui_update_handler.postDelayed(ui_update, 20);
+				ui_update_handler.postDelayed(ui_update, app.RefreshRate);
 		}
 	};
 	
@@ -228,15 +216,15 @@ public class ControllerActivity extends FragmentActivity{
 					if (timer < System.currentTimeMillis()) {
 						app.Frequentjobs();
 						app.mw.SendRequest(app.MainRequestMethod);
-						Thread.sleep(100);
+						Thread.sleep(app.RefreshRate);
 						app.mw.ProcessSerialData(app.loggingON);
 						timer = System.currentTimeMillis() + app.RefreshRate;
 					}else{
 						app.mw.SendRequestMSP(app.mw.MSP_RC);
-						Thread.sleep(25);
+						Thread.sleep(20);
 						app.mw.ProcessSerialData(app.loggingON);
 						sendRawRCDatas();
-						Thread.sleep(25);
+						Thread.sleep(20);
 						app.mw.ProcessSerialData(app.loggingON);
 					}
 				}
@@ -287,7 +275,14 @@ public class ControllerActivity extends FragmentActivity{
 		super.onResume();
 		app.ForceLanguage();
 		stop_update = false;
-		ui_update_handler.postDelayed(ui_update, 20);
+		ui_update_handler.postDelayed(ui_update, app.RefreshRate);
+		
+	}
+	
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		
 		
 	}
 }
