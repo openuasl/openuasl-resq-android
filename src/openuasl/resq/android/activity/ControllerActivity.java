@@ -227,9 +227,10 @@ public class ControllerActivity extends FragmentActivity{
 					}
 				}
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
+			app.commMW.Close();
 		}
 	};
 	
@@ -279,12 +280,6 @@ public class ControllerActivity extends FragmentActivity{
 		app.ForceLanguage();
 		stop_update = false;
 		ui_update_handler.postDelayed(ui_update, app.RefreshRate);
-		
-	}
-	
-	@Override
-	public void onBackPressed() {
-		super.onBackPressed();
 		
 	}
 }
