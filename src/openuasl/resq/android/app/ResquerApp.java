@@ -73,12 +73,11 @@ public class ResquerApp extends App {
 			}
 		});
 		
+		/*
 		UavControlCommunication c = 
 				new UavControlCommunication(
 						getApplicationContext(), client);
-		
-		// test 以�
-		
+		*/
 		//c.setOnReceiveFunctionData(rfd);
 		//c.setOnReceiveSurvivorData(srd);
 		
