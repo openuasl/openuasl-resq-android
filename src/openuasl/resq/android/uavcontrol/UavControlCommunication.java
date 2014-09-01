@@ -199,15 +199,42 @@ public class UavControlCommunication extends Communication {
 				recv_func.onReceiveFunctionData(rbuf);
 				break;
 			case si_rep_header:
+				String name = "", mac = "";
+				int rssi=0;
 				
-				
-				recv_surv.onReceiveSurvivorData(rbuf);
+				parsSurvivorData(rbuf, name, mac, rssi);
+				recv_surv.onReceiveSurvivorData(name, mac, rssi);
 				break;
 			default:
 				return;
 			}
 			
 		}
+	}
+	
+	private void parsSurvivorData(byte[] buf, String name, String mac, int rssi){
+		
+		int i=1;
+		
+		for(; i<20; i++){
+			mac += (char)buf[i];
+		}
+		
+		int name_len=0;
+		name_len |= (buf[i++] & 0xff) << 24;
+		name_len |= (buf[i++] & 0xff) << 16;
+		name_len |= (buf[i++] & 0xff) << 8;
+		name_len |= (buf[i++] & 0xff);
+		
+		for(; i<name_len + 24; i++){
+			name += (char)buf[i];
+		}
+
+		rssi |= (buf[i++] & 0xff) << 24;
+		rssi |= (buf[i++] & 0xff) << 16;
+		rssi |= (buf[i++] & 0xff) << 8;
+		rssi |= (buf[i++] & 0xff);
+		
 	}
 	
 	private synchronized void putMWData(byte[] buf, int len){
