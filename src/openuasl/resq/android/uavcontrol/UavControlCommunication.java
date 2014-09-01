@@ -199,6 +199,8 @@ public class UavControlCommunication extends Communication {
 				recv_func.onReceiveFunctionData(rbuf);
 				break;
 			case si_rep_header:
+				
+				
 				recv_surv.onReceiveSurvivorData(rbuf);
 				break;
 			default:

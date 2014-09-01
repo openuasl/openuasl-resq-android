@@ -5,6 +5,7 @@ import openuasl.resq.android.app.ResquerApp;
 import openuasl.resq.android.uavcontrol.StickControlView;
 import openuasl.resq.android.uavcontrol.UavControlConf;
 import openuasl.resq.android.ucstream.UavCameraView;
+import openuasl.resq.android.uavcontrol.*;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -153,6 +154,20 @@ public class ControllerActivity extends FragmentActivity{
 		});
 
 		map_helper.map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+		
+		////
+		((UavControlCommunication)app.commMW).setOnReceiveSurvivorData(new OnReceiveSurvivorData() {
+			
+			@Override
+			public void onReceiveSurvivorData(String name, String mac, int rssi) {
+				
+				// mac 주소로 해시멥에 있는지 확인.
+				
+				// 없으면 집어넣고 토스트 띄우고
+				
+				// 있으면 rssi 
+			}
+		} );
 	}
 	
 	private Runnable ui_update = new Runnable() {
