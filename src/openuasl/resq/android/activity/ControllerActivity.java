@@ -9,6 +9,7 @@ import openuasl.resq.android.uavcontrol.*;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Gravity;
@@ -32,6 +33,8 @@ import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+
+import java.util.*;
 
 
 public class ControllerActivity extends FragmentActivity{
@@ -58,13 +61,29 @@ public class ControllerActivity extends FragmentActivity{
 	TextView ctrl_info;
 	Thread update_thread;
 		
-	private final Handler commMW_handler = new Handler();
+	private final Handler commMW_handler = new Handler(){
+		@Override
+		public void handleMessage(android.os.Message msg) {
+
+			Context contt = getApplicationContext();
+			CharSequence text = "조난자를 찾았습니다.";
+			int duration = Toast.LENGTH_LONG;
+			Toast toast = Toast.makeText(contt, text, duration);
+			toast.setGravity(Gravity.CENTER, 0, 0);
+			toast.show();
+
+		};
+	};
+	
 	private Handler ui_update_handler = new Handler();
 	private boolean stop_update = false;
 	
 	private long timer = 0;
 	private long center_step = 0;
 	private boolean move_map = true;
+	
+	private HashMap<String,Integer> bluehm=new HashMap();
+	private int hmmax=-5;
 	
 	private int a;
 	
@@ -160,13 +179,43 @@ public class ControllerActivity extends FragmentActivity{
 			
 			@Override
 			public void onReceiveSurvivorData(String name, String mac, int rssi) {
-				
+				Log.i("blueue", "들어옵니다.");
 				// mac 주소로 해시멥에 있는지 확인.
+				Set mapSet = (Set) bluehm.entrySet(); 
+				Iterator mapIterator = mapSet.iterator(); 
+				boolean flag=true,change=false;
+				while (mapIterator.hasNext()) { 
+				     Map.Entry mapEntry = (Map.Entry) mapIterator.next(); 
+				     String key = mapEntry.getKey().toString(); 
+				     int value =Integer.parseInt(mapEntry.getValue().toString()); 
+				     Log.i("blueue", key+ " "+value);
+				     if(key==mac){
+				    	 Log.i("blueue", "같은 것이 있습니다.");
+				    	 flag=false;
+				    	 bluehm.put(key, rssi);
+				    	 if(hmmax<rssi){
+				    		 hmmax=rssi;
+				    		 change=true;
+				    	 }
+				    	 break;
+				     }
+				}
+				if(flag){
+					Log.i("blueue", "새로운 것이 있습니다.");
+					bluehm.put(mac, rssi);
+					Message msg = commMW_handler.obtainMessage(app.commMW.MESSAGE_TOAST);
+					
+					commMW_handler.sendMessage(msg);
+					
+				}
 				
-				// 없으면 집어넣고 토스트 띄우고
+				if(change){
 				
-				// 있으면 rssi 
-			}
+				}
+				     
+
+				} 
+				
 		} );
 	}
 	
