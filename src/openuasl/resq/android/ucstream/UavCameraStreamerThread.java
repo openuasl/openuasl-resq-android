@@ -35,6 +35,12 @@ public class UavCameraStreamerThread extends Thread {
 		
 		euc_kr_devid = LoginActivity.devid_hex_num.getBytes();
 		
+		try {
+			Thread.sleep(7000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
 		streamer.connectServer();
 		streamer.sendDeviceId(euc_kr_devid);
 		
@@ -53,7 +59,6 @@ public class UavCameraStreamerThread extends Thread {
 		try {
 			Thread.sleep(100);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

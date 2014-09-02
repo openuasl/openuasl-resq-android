@@ -66,10 +66,16 @@ public class LoginActivity extends Activity {
 
 			@Override
 			public void onClick(View arg0) {
+				if(QRCodeActivity.qrvalueresult.compareTo("") != 0){
+					startActivity(new Intent(LoginActivity.this,
+							ControllerActivity.class));
+					finish();
+					return;
+				}
+				
 				ck = 1;
-				startActivity(new Intent(LoginActivity.this, QRCodeActivity.class));
-				
-				
+				startActivity(new Intent(LoginActivity.this,
+						QRCodeActivity.class));
 			}
 		});
 		
@@ -78,7 +84,8 @@ public class LoginActivity extends Activity {
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
-		super.onResume();
+		super.onResume();		
+		
 		tv_uavid.setText(QRCodeActivity.qrvalueresult);
 
 		if(ck == -1)	return;
@@ -86,6 +93,7 @@ public class LoginActivity extends Activity {
 		if (QRCodeActivity.qrvalueresult.compareTo("") != 0) {
 			startActivity(new Intent(LoginActivity.this,
 					ControllerActivity.class));
+			finish();
 		}
 		
 		ck = -1;

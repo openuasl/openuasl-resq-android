@@ -21,8 +21,12 @@ public class UavControlCommunication extends Communication {
 	private static final byte fk_rep_header = (byte)0x93;
 	private static final byte si_rep_header = (byte)0x95;
 	
+	private static final byte ctrl_req_stop = (byte)0x77;
+	
 	private OnReceiveFunctionData recv_func;
 	private OnReceiveSurvivorData recv_surv;
+	
+	public static final int MESSAGE_FIND_SURVIVOR = 11;
 	
 	public boolean loopStop = false;
 	
@@ -139,11 +143,24 @@ public class UavControlCommunication extends Communication {
 			} catch (IOException e) {
 				sendMessageToUI_Toast(e.getMessage());
 				e.printStackTrace();
+				Close();
 			}
 		}else{
 			sendMessageToUI_Toast("client is not authorized");
 		}
 		
+	}
+	
+	public synchronized void sendControlEnd(){
+		byte[] b = new byte[1];
+		b[0] = ctrl_req_stop;
+		
+		try {
+			client.write(b);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	@Override
@@ -186,7 +203,7 @@ public class UavControlCommunication extends Communication {
 				len = client.read(rbuf);
 			} catch (IOException e) {
 				e.printStackTrace();
-				Log.i("UavControlCommunication", e.getMessage());
+				Close();
 			}
 
 			if(len == 0)	return;
@@ -259,6 +276,8 @@ public class UavControlCommunication extends Communication {
 						e.printStackTrace();
 					}
 				}
+				
+				
 			}
 		}).start();
 		

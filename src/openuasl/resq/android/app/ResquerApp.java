@@ -17,6 +17,7 @@ import openuasl.resq.android.uavcontrol.UavControlConf;
 import android.content.Context;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.widget.SearchView.OnCloseListener;
 
 import com.ezio.multiwii.app.App;
 import com.ezio.multiwii.mw.MultiWii230;
@@ -161,5 +162,4 @@ public class ResquerApp extends App {
 		}).start();
 		
 	}
-	
 }

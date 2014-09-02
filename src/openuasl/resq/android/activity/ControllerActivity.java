@@ -13,6 +13,7 @@ import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.Window;
@@ -59,18 +60,22 @@ public class ControllerActivity extends FragmentActivity{
 	VarioView ctrl_vario;
 	
 	TextView ctrl_info;
-	Thread update_thread;
+	Thread update_thread = null;
 		
 	private final Handler commMW_handler = new Handler(){
 		@Override
 		public void handleMessage(android.os.Message msg) {
-
-			Context contt = getApplicationContext();
-			CharSequence text = "조난자를 찾았습니다.";
-			int duration = Toast.LENGTH_LONG;
-			Toast toast = Toast.makeText(contt, text, duration);
-			toast.setGravity(Gravity.CENTER, 0, 0);
-			toast.show();
+			
+			switch(msg.what){
+			case UavControlCommunication.MESSAGE_FIND_SURVIVOR:
+				Context contt = getApplicationContext();
+				CharSequence text = "조난자를 찾았습니다.";
+				int duration = Toast.LENGTH_LONG;
+				Toast toast = Toast.makeText(contt, text, duration);
+				toast.setGravity(Gravity.CENTER, 0, 0);
+				toast.show();
+				break;
+			}
 
 		};
 	};
@@ -108,12 +113,9 @@ public class ControllerActivity extends FragmentActivity{
 		app = (ResquerApp)getApplication();
 		a = app.ReverseRoll? -1 : 1;
 		initControlViews();
-				
+		
 		update_thread = new Thread(update);
-		update_thread.start();
-		
-		
-		
+		//update_thread.start();
 	}
 
 	public int roll=1500;
@@ -203,7 +205,8 @@ public class ControllerActivity extends FragmentActivity{
 				if(flag){
 					Log.i("blueue", "새로운 것이 있습니다.");
 					bluehm.put(mac, rssi);
-					Message msg = commMW_handler.obtainMessage(app.commMW.MESSAGE_TOAST);
+					Message msg = commMW_handler.obtainMessage(
+							UavControlCommunication.MESSAGE_FIND_SURVIVOR);
 					
 					commMW_handler.sendMessage(msg);
 					
@@ -234,6 +237,7 @@ public class ControllerActivity extends FragmentActivity{
 
 			if (!stop_update)
 				ui_update_handler.postDelayed(ui_update, app.RefreshRate);
+			
 		}
 	};
 	
@@ -264,13 +268,16 @@ public class ControllerActivity extends FragmentActivity{
 	private Runnable update = new Runnable() {
 		
 		@Override
-		public void run() {						
-			app.commMW.Connect(UavControlConf.server_ip, UavControlConf.server_port);
+		public void run() {
+			if(!app.commMW.Connected){
+			app.commMW.Connect(UavControlConf.server_ip,
+			UavControlConf.server_port);
 			app.certificateProcess();
+			}
 			app.commMW.SetHandler(commMW_handler);
 
 			try {
-				Thread.sleep(7000);
+				Thread.sleep(3000);
 
 				while (!stop_update) {
 					app.mw.ProcessSerialData(app.loggingON);
@@ -294,7 +301,6 @@ public class ControllerActivity extends FragmentActivity{
 				e.printStackTrace();
 			}
 			
-			app.commMW.Close();
 		}
 	};
 	
@@ -336,6 +342,7 @@ public class ControllerActivity extends FragmentActivity{
 		super.onPause();
 		stop_update = true;
 		ui_update_handler.removeCallbacks(ui_update);
+		finish();
 	}
 	
 	@Override
@@ -345,6 +352,7 @@ public class ControllerActivity extends FragmentActivity{
 		stop_update = false;
 		ui_update_handler.postDelayed(ui_update, app.RefreshRate);
 		
+		update_thread.start();
 	}
 }
 
