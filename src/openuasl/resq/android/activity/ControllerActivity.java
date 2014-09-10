@@ -122,7 +122,7 @@ public class ControllerActivity extends FragmentActivity{
 	public int pitch=1500;
 	public int yaw=1500;
 	public int throttle = 1000;
-	public int aux1 = 1500;
+	public int aux1 = 1000;
 	public int aux2 = 1500;
 	public int aux3 = 1500;
 	public int aux4 = 1500;
